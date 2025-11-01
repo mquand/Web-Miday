@@ -5,21 +5,24 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { FaHeart, FaCalendarAlt, FaGift, FaShareAlt } from 'react-icons/fa';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
-import 'swiper/css';
-import 'aos/dist/aos.css';
 
 export default function Home() {
   const [timeElapsed, setTimeElapsed] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const startDate = new Date('2025-10-10T00:00:00'); // Ngày bắt đầu yêu nhau
+  const [mounted, setMounted] = useState(false);
+  const startDate = useRef(new Date('2025-10-10T00:00:00'));
 
   useEffect(() => {
+    setMounted(true);
+    
     // init AOS once
-    AOS.init({ duration: 700, once: true, offset: 80 });
+    if (typeof window !== 'undefined') {
+      AOS.init({ duration: 700, once: true, offset: 80 });
+    }
 
     // Hàm tính toán thời gian đã trôi qua
     const calculateTimeElapsed = () => {
       const now = new Date();
-      const diff = now - startDate;
+      const diff = now - startDate.current;
       
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -49,6 +52,10 @@ export default function Home() {
   const { scrollY } = useScroll({ target: ref });
   const y = useTransform(scrollY, [0, 300], [0, -40]);
 
+  if (!mounted) {
+    return null; // Hoặc return loading spinner
+  }
+
   return (
     <main className="font-sans">
       {/* Navbar */}
@@ -57,7 +64,7 @@ export default function Home() {
           <FaHeart className="text-primary" />
           <span>MiDay</span>
         </div>
-        <div className="flex gap-6 text-gray-600 text-sm">
+        <div className="flex items-center gap-6 text-gray-600 text-sm">
           <a href="#features" className="hover:text-primary">Tính năng</a>
           <a href="#reviews" className="hover:text-primary">Đánh giá</a>
           <button className="bg-primary text-white px-4 py-2 rounded-full hover:opacity-90">
@@ -75,24 +82,24 @@ export default function Home() {
           <div className="h-72 md:h-96 bg-gradient-to-tr from-white to-[rgba(255,107,129,0.06)]"></div>
         </motion.div>
 
-        <div className="relative z-10 text-center py-20">
+        <div className="relative z-10 text-center py-32">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="text-5xl font-bold mb-4"
           >
-            Đếm ngày <span className="text-primary">yêu nhau</span>
+            Lưu trữ khoảng khắc <span className="text-primary">bên nhau</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }} className="text-gray-500 mb-10">
             Ghi nhận và tôn vinh từng khoảnh khắc đặc biệt trong hành trình của bạn
           </motion.p>
 
-          <div className="mx-auto bg-gray-50 rounded-2xl shadow-sm p-10 max-w-md mb-8" data-aos="zoom-in">
-            <div className="text-5xl font-bold mb-2">{timeElapsed.days.toLocaleString()}</div>
-            <div className="text-gray-600">ngày yêu nhau</div>
+          <div className="mx-auto bg-gray-50 rounded-2xl shadow-sm p-12 max-w-lg mb-8" data-aos="zoom-in">
+            <div className="text-6xl font-bold mb-3">{timeElapsed.days.toLocaleString()}</div>
+            <div className="text-gray-600 text-lg">ngày đã đồng hành</div>
             <div className="text-gray-400 text-sm mt-1">Kể từ 10/10/2025</div>
-            <div className="flex justify-center gap-4 mt-4 text-sm text-gray-500">
+            <div className="flex justify-center gap-6 mt-5 text-base text-gray-500">
               <span>{timeElapsed.hours.toString().padStart(2, '0')} giờ</span>
               <span>{timeElapsed.minutes.toString().padStart(2, '0')} phút</span>
               <span>{timeElapsed.seconds.toString().padStart(2, '0')} giây</span>
@@ -107,7 +114,7 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section id="features" className="py-20 text-center">
+      <section id="features" className="py-32 text-center">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-3xl font-semibold mb-3" data-aos="fade-up">Tính năng đơn giản</h2>
           <p className="text-gray-500 mb-12" data-aos="fade-up" data-aos-delay="80">Tập trung vào những gì quan trọng nhất</p>
@@ -129,7 +136,7 @@ export default function Home() {
       </section>
 
       {/* Review (swiper) */}
-      <section id="reviews" className="bg-gray-50 py-20">
+      <section id="reviews" className="bg-gray-50 py-32">
         <div className="max-w-4xl mx-auto text-center px-6">
           <h3 className="text-2xl font-medium mb-2" data-aos="fade-up">Người dùng nói gì</h3>
           <p className="text-gray-500 mb-8" data-aos="fade-up" data-aos-delay="60">Vuốt để xem thêm đánh giá</p>
@@ -140,7 +147,7 @@ export default function Home() {
               slidesPerView={1} 
               loop
               autoplay={{
-                delay: 1500,
+                delay: 2500,
                 disableOnInteraction: false,
               }}
               modules={[Autoplay]}
@@ -159,7 +166,7 @@ export default function Home() {
       </section>
 
       {/* Footer CTA */}
-      <section className="py-20 text-center">
+      <section className="py-32 text-center">
         <div className="max-w-2xl mx-auto px-6">
           <h2 className="text-3xl font-semibold mb-3" data-aos="fade-up">Bắt đầu lưu trữ những ngày của bạn</h2>
           <p className="text-gray-500 mb-6" data-aos="fade-up" data-aos-delay="60">Miễn phí, đơn giản và đầy ý nghĩa</p>
@@ -168,7 +175,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-10 text-center text-sm text-gray-500">
+      <footer className="border-t py-16 text-center text-sm text-gray-500">
         <div className="flex justify-center items-center gap-2 mb-4">
           <FaHeart className="text-primary" />
           <span className="font-semibold text-gray-700">MiDay</span>
