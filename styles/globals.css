@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import 'aos/dist/aos.css';
+
+html, body, #__next { height: 100%; }
+body { @apply text-gray-800 bg-white font-sans; }
+
+.card { @apply bg-slate-50 rounded-2xl p-8 shadow-sm; }
