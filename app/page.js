@@ -2,13 +2,14 @@
 import { useEffect, useRef, useState } from 'react';
 import AOS from 'aos';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { FaHeart, FaCalendarAlt, FaGift, FaShareAlt } from 'react-icons/fa';
+import { FaHeart, FaCalendarAlt, FaGift, FaShareAlt, FaBars, FaTimes } from 'react-icons/fa';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 
 export default function Home() {
   const [timeElapsed, setTimeElapsed] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [mounted, setMounted] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const startDate = useRef(new Date('2025-10-10T00:00:00'));
 
   useEffect(() => {
@@ -59,18 +60,57 @@ export default function Home() {
   return (
     <main className="font-sans">
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white flex justify-between items-center px-8 py-4 shadow-sm">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white flex justify-between items-center px-4 md:px-8 py-4 shadow-sm">
         <div className="flex items-center gap-2 text-lg font-semibold">
           <FaHeart className="text-primary" />
           <span>MiDay</span>
         </div>
-        <div className="flex items-center gap-6 text-gray-600 text-sm">
-          <a href="#features" className="hover:text-primary">Tính năng</a>
-          <a href="#reviews" className="hover:text-primary">Đánh giá</a>
-          <button className="bg-primary text-white px-4 py-2 rounded-full hover:opacity-90">
+        
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center gap-6 text-gray-600 text-sm">
+          <a href="#features" className="hover:text-primary transition-colors">Tính năng</a>
+          <a href="#reviews" className="hover:text-primary transition-colors">Đánh giá</a>
+          <button className="bg-primary text-white px-4 py-2 rounded-full hover:bg-pink-600 transition-colors">
             Bắt đầu
           </button>
         </div>
+
+        {/* Mobile Menu Button */}
+        <button 
+          className="md:hidden text-gray-600 text-2xl"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+        </button>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="absolute top-full left-0 right-0 bg-white shadow-lg md:hidden">
+            <div className="flex flex-col p-4 gap-4">
+              <a 
+                href="#features" 
+                className="hover:text-primary transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Tính năng
+              </a>
+              <a 
+                href="#reviews" 
+                className="hover:text-primary transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Đánh giá
+              </a>
+              <button 
+                className="bg-primary text-white px-4 py-2 rounded-full hover:bg-pink-600 transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Bắt đầu
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Spacer for fixed navbar */}
@@ -79,10 +119,10 @@ export default function Home() {
       {/* Hero with parallax */}
       <section ref={ref} className="relative overflow-hidden">
         <motion.div style={{ y }} className="absolute inset-0 pointer-events-none">
-          <div className="h-72 md:h-96 bg-gradient-to-tr from-white to-[rgba(255,107,129,0.06)]"></div>
+          <div className="h-72 md:h-96 bg-white"></div>
         </motion.div>
 
-        <div className="relative z-10 text-center py-32">
+        <div className="relative z-10 text-center py-12 md:py-20">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -95,20 +135,29 @@ export default function Home() {
             Ghi nhận và tôn vinh từng khoảnh khắc đặc biệt trong hành trình của bạn
           </motion.p>
 
-          <div className="mx-auto bg-gray-50 rounded-2xl shadow-sm p-12 max-w-lg mb-8" data-aos="zoom-in">
-            <div className="text-6xl font-bold mb-3">{timeElapsed.days.toLocaleString()}</div>
-            <div className="text-gray-600 text-lg">ngày đã đồng hành</div>
-            <div className="text-gray-400 text-sm mt-1">Kể từ 10/10/2025</div>
-            <div className="flex justify-center gap-6 mt-5 text-base text-gray-500">
-              <span>{timeElapsed.hours.toString().padStart(2, '0')} giờ</span>
-              <span>{timeElapsed.minutes.toString().padStart(2, '0')} phút</span>
-              <span>{timeElapsed.seconds.toString().padStart(2, '0')} giây</span>
+          <div className="mx-auto bg-gray-50 rounded-2xl p-12 max-w-2xl mb-8" data-aos="zoom-in">
+            <div className="text-7xl md:text-8xl font-bold mb-3 text-primary">{timeElapsed.days.toLocaleString()}</div>
+            <div className="text-gray-600 text-lg font-medium">ngày đã bên nhau</div>
+            <div className="text-gray-400 text-sm mt-1 italic">Kể từ 10/10/2025</div>
+            <div className="flex justify-center gap-4 mt-6">
+              <div className="bg-white px-4 py-3 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                <div className="text-2xl font-bold text-primary">{timeElapsed.hours.toString().padStart(2, '0')}</div>
+                <div className="text-xs text-gray-500 mt-1">giờ</div>
+              </div>
+              <div className="bg-white px-4 py-3 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                <div className="text-2xl font-bold text-primary">{timeElapsed.minutes.toString().padStart(2, '0')}</div>
+                <div className="text-xs text-gray-500 mt-1">phút</div>
+              </div>
+              <div className="bg-white px-4 py-3 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                <div className="text-2xl font-bold text-primary">{timeElapsed.seconds.toString().padStart(2, '0')}</div>
+                <div className="text-xs text-gray-500 mt-1">giây</div>
+              </div>
             </div>
           </div>
 
           <div className="flex justify-center gap-4" data-aos="fade-up" data-aos-delay="100">
-            <button className="bg-primary text-white px-6 py-3 rounded-full font-medium">Tạo bộ đếm</button>
-            <button className="border border-gray-300 px-6 py-3 rounded-full font-medium text-gray-700 hover:bg-gray-50">Xem demo</button>
+            <button className="bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-pink-600 shadow-sm hover:shadow-md transition-all">Tạo bộ đếm</button>
+            <button className="border border-gray-300 px-6 py-3 rounded-full font-medium text-gray-700 hover:border-primary hover:text-primary shadow-sm hover:shadow-md transition-all">Xem demo</button>
           </div>
         </div>
       </section>
@@ -170,21 +219,24 @@ export default function Home() {
         <div className="max-w-2xl mx-auto px-6">
           <h2 className="text-3xl font-semibold mb-3" data-aos="fade-up">Bắt đầu lưu trữ những ngày của bạn</h2>
           <p className="text-gray-500 mb-6" data-aos="fade-up" data-aos-delay="60">Miễn phí, đơn giản và đầy ý nghĩa</p>
-          <button className="bg-primary text-white px-8 py-3 rounded-full font-medium text-lg" data-aos="zoom-in">Lưu trữ cho riêng bạn</button>
+          <button className="bg-primary text-white px-8 py-3 rounded-full font-medium text-lg hover:bg-pink-600 shadow-sm hover:shadow-md transition-all" data-aos="zoom-in">Lưu trữ cho riêng bạn</button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-16 text-center text-sm text-gray-500">
-        <div className="flex justify-center items-center gap-2 mb-4">
-          <FaHeart className="text-primary" />
-          <span className="font-semibold text-gray-700">MiDay</span>
+      <footer className="border-t border-gray-100 py-16 text-center text-sm text-gray-500">
+        <div className="flex flex-col md:flex-row justify-between items-center px-8 max-w-6xl mx-auto mb-4">
+          <div className="flex items-center gap-2 mb-4 md:mb-0">
+            <FaHeart className="text-primary" />
+            <span className="font-semibold text-gray-700">MiDay</span>
+          </div>
+          <div className="flex gap-6">
+            <a href="#" className="hover:text-primary">Điều khoản</a>
+            <a href="#" className="hover:text-primary">Bảo mật</a>
+            <a href="#" className="hover:text-primary">Liên hệ</a>
+          </div>
         </div>
-        <div className="flex justify-center gap-6 mb-4">
-          <a href="#" className="hover:text-primary">Điều khoản</a>
-          <a href="#" className="hover:text-primary">Bảo mật</a>
-          <a href="#" className="hover:text-primary">Liên hệ</a>
-        </div>
+        <div className="border-t border-gray-100 mx-auto max-w-6xl mb-4"></div>
         <p>© 2025 MiDay. Được tạo với 💖</p>
       </footer>
     </main>
