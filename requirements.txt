@@ -1,0 +1,53 @@
+# MiDay - Landing Page Requirements
+
+## Node.js Version
+
+- Node.js >= 16.x
+
+## NPM Dependencies
+
+### Core Dependencies
+
+- next: ^14.2.3
+- react: ^18.2.0
+- react-dom: ^18.2.0
+
+### Animation & UI Libraries
+
+- framer-motion: ^10.12.6
+- aos: ^3.0.0-beta.6
+- swiper: ^10.3.1
+- react-icons: ^4.10.1
+
+### Development Dependencies
+
+- autoprefixer: ^10.4.14
+- postcss: ^8.4.21
+- tailwindcss: ^3.3.2
+
+## Installation
+
+```bash
+# Install all dependencies
+npm install
+
+# Or using yarn
+yarn install
+```
+
+## Development
+
+```bash
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
+```
+
+## Environment Variables
+
+Create a `.env.local` file in the root directory if needed for environment-specific configurations.
