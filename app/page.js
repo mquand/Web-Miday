@@ -10,7 +10,8 @@ export default function Home() {
   const [timeElapsed, setTimeElapsed] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const startDate = useRef(new Date('2025-10-10T00:00:00'));
+  const startDate = useRef(new Date('2025-02-10T00:00:00'));
+  const startDateText = '10/02/2025';
 
   useEffect(() => {
     setMounted(true);
@@ -138,7 +139,7 @@ export default function Home() {
           <div className="mx-auto bg-gray-50 rounded-2xl p-12 max-w-2xl mb-8" data-aos="zoom-in">
             <div className="text-7xl md:text-8xl font-bold mb-3 text-primary">{timeElapsed.days.toLocaleString()}</div>
             <div className="text-gray-600 text-lg font-medium">ngày đã bên nhau</div>
-            <div className="text-gray-400 text-sm mt-1 italic">Kể từ 10/10/2025</div>
+            <div className="text-gray-400 text-sm mt-1 italic">Kể từ  {startDateText}</div>
             <div className="flex justify-center gap-4 mt-6">
               <div className="bg-white px-4 py-3 rounded-xl shadow-sm hover:shadow-md transition-shadow">
                 <div className="text-2xl font-bold text-primary">{timeElapsed.hours.toString().padStart(2, '0')}</div>
