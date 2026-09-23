@@ -42,7 +42,22 @@ export default function Home() {
 
       try {
         const savedCouple = localStorage.getItem('miday_couple_info');
-        if (savedCouple) setCoupleInfo(JSON.parse(savedCouple));
+        if (savedCouple) {
+          const parsed = JSON.parse(savedCouple);
+          let changed = false;
+          if (parsed.girlName === 'Phương Anh') {
+            parsed.girlName = 'Chase Miee';
+            changed = true;
+          }
+          if (parsed.startDate === '2024-02-10') {
+            parsed.startDate = '2025-02-10';
+            changed = true;
+          }
+          if (changed) {
+            localStorage.setItem('miday_couple_info', JSON.stringify(parsed));
+          }
+          setCoupleInfo(parsed);
+        }
 
         const savedMilestones = localStorage.getItem('miday_milestones');
         if (savedMilestones) setMilestones(JSON.parse(savedMilestones));
@@ -51,7 +66,20 @@ export default function Home() {
         if (savedPhotos) setPhotos(JSON.parse(savedPhotos));
 
         const savedLetters = localStorage.getItem('miday_letters');
-        if (savedLetters) setLetters(JSON.parse(savedLetters));
+        if (savedLetters) {
+          let parsed = JSON.parse(savedLetters);
+          let changed = false;
+          parsed = parsed.map((l) => {
+            let updated = { ...l };
+            if (updated.to === 'Phương Anh') { updated.to = 'Chase Miee'; changed = true; }
+            if (updated.from === 'Phương Anh') { updated.from = 'Chase Miee'; changed = true; }
+            return updated;
+          });
+          if (changed) {
+            localStorage.setItem('miday_letters', JSON.stringify(parsed));
+          }
+          setLetters(parsed);
+        }
 
         const savedBucketList = localStorage.getItem('miday_bucketlist');
         if (savedBucketList) setBucketList(JSON.parse(savedBucketList));

@@ -4,6 +4,23 @@
 
 @import 'aos/dist/aos.css';
 
+/* ========================================================
+   CUSTOM HEART CURSOR
+   Con trỏ chuột hình trái tim ngọt ngào đồng bộ toàn trang
+   ======================================================== */
+:root {
+  --cursor-heart-default: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 24 24'%3E%3Cpath fill='%23FF6B81' stroke='%23FFFFFF' stroke-width='1.8' stroke-linejoin='round' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") 6 3, auto;
+  --cursor-heart-pointer: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 24 24'%3E%3Cpath fill='%23FF4D6D' stroke='%23FFFFFF' stroke-width='1.8' stroke-linejoin='round' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3Ccircle cx='19' cy='5' r='2.5' fill='%23FFD166' stroke='%23FFFFFF' stroke-width='0.8'/%3E%3C/svg%3E") 6 3, pointer;
+}
+
+html, body, * {
+  cursor: var(--cursor-heart-default);
+}
+
+a, button, [role="button"], input[type="submit"], input[type="button"], input[type="file"], select, label, .cursor-pointer {
+  cursor: var(--cursor-heart-pointer) !important;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -48,6 +65,22 @@ body {
 
 .animate-float-up {
   animation: floatUp 2.2s forwards ease-out;
+}
+
+/* Trail animation for cursor hearts */
+@keyframes trailFade {
+  0% {
+    transform: translateY(0) scale(1) rotate(0deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-35px) scale(0.5) rotate(15deg);
+    opacity: 0;
+  }
+}
+
+.animate-trail-fade {
+  animation: trailFade 0.8s forwards ease-out;
 }
 
 /* Vinyl spinning animation */
