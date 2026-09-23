@@ -4,6 +4,7 @@ import AOS from 'aos';
 import { FaHeart } from 'react-icons/fa';
 
 import {
+  DEFAULT_CONFIG_VERSION,
   DEFAULT_COUPLE_INFO,
   DEFAULT_TIMELINE,
   DEFAULT_GALLERY,
@@ -57,63 +58,81 @@ export default function Home() {
       AOS.init({ duration: 700, once: true, offset: 60 });
 
       try {
-        const savedCouple = localStorage.getItem('miday_couple_info');
-        if (savedCouple) {
-          const parsed = JSON.parse(savedCouple);
-          let changed = false;
-          if (parsed.girlName === 'Phương Anh') {
-            parsed.girlName = 'Chase Miee';
-            changed = true;
+        const savedVersion = localStorage.getItem('miday_config_version');
+
+        // Nếu phiên bản cấu hình trong couple.config.js thay đổi, tải lại toàn bộ cấu hình mới
+        if (savedVersion !== DEFAULT_CONFIG_VERSION) {
+          localStorage.setItem('miday_config_version', DEFAULT_CONFIG_VERSION);
+          localStorage.setItem('miday_couple_info', JSON.stringify(DEFAULT_COUPLE_INFO));
+          localStorage.setItem('miday_milestones', JSON.stringify(DEFAULT_TIMELINE));
+          localStorage.setItem('miday_gallery', JSON.stringify(DEFAULT_GALLERY));
+          localStorage.setItem('miday_letters', JSON.stringify(DEFAULT_LETTERS));
+          localStorage.setItem('miday_bucketlist', JSON.stringify(DEFAULT_BUCKET_LIST));
+          localStorage.setItem('miday_countdowns', JSON.stringify(DEFAULT_COUNTDOWNS));
+          localStorage.setItem('miday_wheel_foods', JSON.stringify(DEFAULT_WHEEL_FOODS));
+          localStorage.setItem('miday_wheel_dates', JSON.stringify(DEFAULT_WHEEL_DATES));
+          localStorage.setItem('miday_love_map', JSON.stringify(DEFAULT_LOVE_MAP));
+          localStorage.setItem('miday_secret_vault', JSON.stringify(DEFAULT_SECRET_VAULT));
+
+          setCoupleInfo(DEFAULT_COUPLE_INFO);
+          setMilestones(DEFAULT_TIMELINE);
+          setPhotos(DEFAULT_GALLERY);
+          setLetters(DEFAULT_LETTERS);
+          setBucketList(DEFAULT_BUCKET_LIST);
+          setCountdowns(DEFAULT_COUNTDOWNS);
+          setWheelFoods(DEFAULT_WHEEL_FOODS);
+          setWheelDates(DEFAULT_WHEEL_DATES);
+          setLoveMap(DEFAULT_LOVE_MAP);
+          setSecretVault(DEFAULT_SECRET_VAULT);
+        } else {
+          // Phiên bản hiện tại: đọc từ localStorage và đồng bộ nếu couple.config.js có thay đổi
+          const savedCouple = localStorage.getItem('miday_couple_info');
+          if (savedCouple) {
+            const parsed = JSON.parse(savedCouple);
+            // Nếu người dùng vừa sửa tên, ngày yêu, avatar hoặc quote trong couple.config.js
+            if (
+              DEFAULT_COUPLE_INFO.boyName !== parsed.boyName ||
+              DEFAULT_COUPLE_INFO.girlName !== parsed.girlName ||
+              DEFAULT_COUPLE_INFO.startDate !== parsed.startDate ||
+              DEFAULT_COUPLE_INFO.quote !== parsed.quote ||
+              DEFAULT_COUPLE_INFO.boyAvatar !== parsed.boyAvatar ||
+              DEFAULT_COUPLE_INFO.girlAvatar !== parsed.girlAvatar
+            ) {
+              const merged = { ...parsed, ...DEFAULT_COUPLE_INFO };
+              localStorage.setItem('miday_couple_info', JSON.stringify(merged));
+              setCoupleInfo(merged);
+            } else {
+              setCoupleInfo(parsed);
+            }
           }
-          if (parsed.startDate === '2024-02-10') {
-            parsed.startDate = '2025-02-10';
-            changed = true;
-          }
-          if (changed) {
-            localStorage.setItem('miday_couple_info', JSON.stringify(parsed));
-          }
-          setCoupleInfo(parsed);
+
+          const savedMilestones = localStorage.getItem('miday_milestones');
+          if (savedMilestones) setMilestones(JSON.parse(savedMilestones));
+
+          const savedPhotos = localStorage.getItem('miday_gallery');
+          if (savedPhotos) setPhotos(JSON.parse(savedPhotos));
+
+          const savedLetters = localStorage.getItem('miday_letters');
+          if (savedLetters) setLetters(JSON.parse(savedLetters));
+
+          const savedBucketList = localStorage.getItem('miday_bucketlist');
+          if (savedBucketList) setBucketList(JSON.parse(savedBucketList));
+
+          const savedCountdowns = localStorage.getItem('miday_countdowns');
+          if (savedCountdowns) setCountdowns(JSON.parse(savedCountdowns));
+
+          const savedFoods = localStorage.getItem('miday_wheel_foods');
+          if (savedFoods) setWheelFoods(JSON.parse(savedFoods));
+
+          const savedDates = localStorage.getItem('miday_wheel_dates');
+          if (savedDates) setWheelDates(JSON.parse(savedDates));
+
+          const savedMap = localStorage.getItem('miday_love_map');
+          if (savedMap) setLoveMap(JSON.parse(savedMap));
+
+          const savedVault = localStorage.getItem('miday_secret_vault');
+          if (savedVault) setSecretVault(JSON.parse(savedVault));
         }
-
-        const savedMilestones = localStorage.getItem('miday_milestones');
-        if (savedMilestones) setMilestones(JSON.parse(savedMilestones));
-
-        const savedPhotos = localStorage.getItem('miday_gallery');
-        if (savedPhotos) setPhotos(JSON.parse(savedPhotos));
-
-        const savedLetters = localStorage.getItem('miday_letters');
-        if (savedLetters) {
-          let parsed = JSON.parse(savedLetters);
-          let changed = false;
-          parsed = parsed.map((l) => {
-            let updated = { ...l };
-            if (updated.to === 'Phương Anh') { updated.to = 'Chase Miee'; changed = true; }
-            if (updated.from === 'Phương Anh') { updated.from = 'Chase Miee'; changed = true; }
-            return updated;
-          });
-          if (changed) {
-            localStorage.setItem('miday_letters', JSON.stringify(parsed));
-          }
-          setLetters(parsed);
-        }
-
-        const savedBucketList = localStorage.getItem('miday_bucketlist');
-        if (savedBucketList) setBucketList(JSON.parse(savedBucketList));
-
-        const savedCountdowns = localStorage.getItem('miday_countdowns');
-        if (savedCountdowns) setCountdowns(JSON.parse(savedCountdowns));
-
-        const savedFoods = localStorage.getItem('miday_wheel_foods');
-        if (savedFoods) setWheelFoods(JSON.parse(savedFoods));
-
-        const savedDates = localStorage.getItem('miday_wheel_dates');
-        if (savedDates) setWheelDates(JSON.parse(savedDates));
-
-        const savedMap = localStorage.getItem('miday_love_map');
-        if (savedMap) setLoveMap(JSON.parse(savedMap));
-
-        const savedVault = localStorage.getItem('miday_secret_vault');
-        if (savedVault) setSecretVault(JSON.parse(savedVault));
       } catch (err) {
         console.error('Error loading data from localStorage:', err);
       }
