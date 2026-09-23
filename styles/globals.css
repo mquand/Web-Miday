@@ -4,7 +4,80 @@
 
 @import 'aos/dist/aos.css';
 
-html, body, #__next { height: 100%; }
-body { @apply text-gray-800 bg-white font-sans; }
+html {
+  scroll-behavior: smooth;
+}
 
-.card { @apply bg-slate-50 rounded-2xl p-8 shadow-sm; }
+html, body, #__next {
+  min-height: 100%;
+}
+
+body {
+  @apply text-gray-800 bg-white font-sans;
+  overflow-x: hidden;
+}
+
+.card {
+  @apply bg-slate-50 rounded-2xl p-8 shadow-sm;
+}
+
+/* Custom romantic heartbeat animation */
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.15); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.25); }
+  70% { transform: scale(1); }
+}
+
+.animate-heartbeat {
+  animation: heartbeat 1.8s infinite ease-in-out;
+}
+
+/* Float animation for hearts */
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(0.8) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-120px) scale(1.2) rotate(20deg);
+    opacity: 0;
+  }
+}
+
+.animate-float-up {
+  animation: floatUp 2.2s forwards ease-out;
+}
+
+/* Vinyl spinning animation */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 12s linear infinite;
+}
+
+/* Soft custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fdf2f4;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FF6B81;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #e0556b;
+}
