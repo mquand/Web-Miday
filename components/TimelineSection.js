@@ -105,9 +105,9 @@ export default function TimelineSection({ milestones, onAddMilestone, onDeleteMi
                   }`}
                   data-aos={isEven ? 'fade-left' : 'fade-right'}
                 >
-                  {/* Center Dot */}
-                  <div className="absolute left-4 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white border-2 border-primary flex items-center justify-center shadow-md z-10">
-                    <FaHeart className="text-primary text-xs animate-pulse" />
+                  {/* Center Glowing Dot */}
+                  <div className="absolute left-4 md:left-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-gradient-to-tr from-pink-500 to-rose-400 text-white flex items-center justify-center shadow-lg shadow-pink-200 ring-4 ring-pink-100 z-10 group-hover:scale-110 transition-transform">
+                    <FaHeart className="text-white text-xs animate-pulse" />
                   </div>
 
                   {/* Spacer for mobile margin */}
@@ -115,7 +115,7 @@ export default function TimelineSection({ milestones, onAddMilestone, onDeleteMi
 
                   {/* Content Card */}
                   <div
-                    className={`w-full md:w-[44%] bg-white rounded-2xl p-5 md:p-6 border border-pink-100/80 shadow-sm hover:shadow-md transition-shadow relative group ${
+                    className={`w-full md:w-[44%] bg-white rounded-3xl p-6 border border-pink-100/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative group ${
                       isEven ? 'md:mr-auto' : 'md:ml-auto'
                     }`}
                   >

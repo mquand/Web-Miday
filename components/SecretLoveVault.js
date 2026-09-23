@@ -101,18 +101,18 @@ export default function SecretLoveVault({
 
         {/* Vault Main Container */}
         <div
-          className="max-w-xl mx-auto bg-[#FFFDFE] border border-pink-100 rounded-3xl p-6 md:p-10 shadow-lg relative overflow-hidden"
+          className="max-w-xl mx-auto bg-gradient-to-b from-white to-pink-50/40 border border-pink-200/80 rounded-3xl p-6 md:p-10 shadow-xl shadow-pink-100/50 relative overflow-hidden"
           data-aos="zoom-in"
         >
           {!isUnlocked ? (
             /* Locked State with PIN Pad */
             <div className="flex flex-col items-center">
-              <div className="w-16 h-16 rounded-full bg-pink-50 border border-pink-200 text-primary flex items-center justify-center text-2xl mb-4 shadow-sm animate-pulse">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-rose-500 to-primary text-white flex items-center justify-center text-2xl mb-4 shadow-lg shadow-pink-200 ring-4 ring-pink-100 animate-pulse">
                 <FaLock />
               </div>
 
-              <h3 className="font-bold text-gray-800 text-lg mb-1">Nhập Mật Mã Tình Yêu</h3>
-              <p className="text-xs text-gray-400 mb-6">Gợi ý: Ngày kỷ niệm của hai bạn (4 chữ số)</p>
+              <h3 className="font-bold text-gray-800 text-lg mb-1 tracking-tight">Nhập Mật Mã Tình Yêu</h3>
+              <p className="text-xs text-gray-400 mb-6 font-medium">Gợi ý: Ngày kỷ niệm của hai bạn (4 chữ số)</p>
 
               {/* PIN Dots Display */}
               <div
@@ -123,9 +123,9 @@ export default function SecretLoveVault({
                 {[0, 1, 2, 3].map((idx) => (
                   <div
                     key={idx}
-                    className={`w-4 h-4 rounded-full border-2 transition-all ${
+                    className={`w-4 h-4 rounded-full border-2 transition-all duration-300 ${
                       pinInput.length > idx
-                        ? 'bg-primary border-primary scale-125'
+                        ? 'bg-primary border-primary scale-125 shadow-sm shadow-pink-300'
                         : 'border-pink-200 bg-white'
                     }`}
                   ></div>
@@ -133,29 +133,29 @@ export default function SecretLoveVault({
               </div>
 
               {/* Number Keypad */}
-              <div className="grid grid-cols-3 gap-3 w-60">
+              <div className="grid grid-cols-3 gap-3 w-64">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                   <button
                     key={num}
                     onClick={() => handleKeyPress(num.toString())}
-                    className="h-14 rounded-2xl bg-white border border-gray-100 hover:border-pink-300 hover:bg-pink-50/50 text-gray-800 font-bold text-lg shadow-xs active:scale-95 transition-all"
+                    className="h-14 rounded-2xl bg-white border border-pink-100/80 hover:border-primary hover:bg-pink-50/70 text-gray-800 font-bold text-xl shadow-xs hover:shadow-md hover:scale-104 active:scale-95 transition-all font-mono"
                   >
                     {num}
                   </button>
                 ))}
                 <button
                   onClick={handleClear}
-                  className="h-14 rounded-2xl bg-gray-50 border border-gray-100 hover:bg-gray-100 text-gray-500 font-semibold text-xs active:scale-95 transition-all"
+                  className="h-14 rounded-2xl bg-gray-50 border border-gray-200/70 hover:bg-gray-100 text-gray-500 font-semibold text-xs active:scale-95 transition-all"
                 >
                   Xóa
                 </button>
                 <button
                   onClick={() => handleKeyPress('0')}
-                  className="h-14 rounded-2xl bg-white border border-gray-100 hover:border-pink-300 hover:bg-pink-50/50 text-gray-800 font-bold text-lg shadow-xs active:scale-95 transition-all"
+                  className="h-14 rounded-2xl bg-white border border-pink-100/80 hover:border-primary hover:bg-pink-50/70 text-gray-800 font-bold text-xl shadow-xs hover:shadow-md hover:scale-104 active:scale-95 transition-all font-mono"
                 >
                   0
                 </button>
-                <div className="h-14 flex items-center justify-center text-primary text-sm">
+                <div className="h-14 flex items-center justify-center text-primary text-base">
                   <FaHeart className="animate-pulse" />
                 </div>
               </div>

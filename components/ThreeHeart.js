@@ -10,79 +10,130 @@ export default function ThreeHeart({ onBurstHearts }) {
     const container = containerRef.current;
     if (!container) return;
 
-    const width = container.clientWidth || 140;
-    const height = container.clientHeight || 140;
+    const width = container.clientWidth || 150;
+    const height = container.clientHeight || 150;
 
     // 1. Scene, Camera, Renderer
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.z = 24;
+    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
+    camera.position.z = 16;
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 1.15;
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // 2. 3D Heart Geometry (Đường cong Bezier trái tim chuẩn)
-    const heartShape = new THREE.Shape();
-    const x = 0, y = 0;
-    heartShape.moveTo(x + 2.5, y + 2.5);
-    heartShape.bezierCurveTo(x + 2.5, y + 2.5, x + 2.0, y, x, y);
-    heartShape.bezierCurveTo(x - 3.0, y, x - 3.0, y + 3.5, x - 3.0, y + 3.5);
-    heartShape.bezierCurveTo(x - 3.0, y + 5.5, x - 1.5, y + 7.7, x + 2.5, y + 9.5);
-    heartShape.bezierCurveTo(x + 6.0, y + 7.7, x + 8.0, y + 5.5, x + 8.0, y + 3.5);
-    heartShape.bezierCurveTo(x + 8.0, y + 3.5, x + 8.0, y, x + 5.0, y);
-    heartShape.bezierCurveTo(x + 3.5, y, x + 2.5, y + 2.5, x + 2.5, y + 2.5);
+    // 2. Trái tim 3D Hữu cơ Căng tròn (Volumetric Organic 3D Parametric Heart)
+    // Không dùng extrude 2D phẳng! Dùng phương trình hình học 3 chiều căng mọng, mềm mại ở mọi góc nhìn
+    const createOrganicHeartGeometry = (subdivisions = 48) => {
+      const geom = new THREE.BufferGeometry();
+      const vertices = [];
+      const indices = [];
 
-    const extrudeSettings = {
-      depth: 2.2,
-      bevelEnabled: true,
-      bevelSegments: 12,
-      steps: 2,
-      bevelSize: 1.2,
-      bevelThickness: 1.2,
+      const uSteps = subdivisions * 2;
+      const vSteps = subdivisions;
+
+      for (let i = 0; i <= uSteps; i++) {
+        const u = (Math.PI * 2 * i) / uSteps;
+        for (let j = 0; j <= vSteps; j++) {
+          const v = (Math.PI * j) / vSteps;
+
+          // Đường cong Cardioid chuẩn
+          const sinU = Math.sin(u);
+          const cosU = Math.cos(u);
+          const x0 = 16 * Math.pow(sinU, 3);
+          const y0 = 13 * cosU - 5 * Math.cos(2 * u) - 2 * Math.cos(3 * u) - Math.cos(4 * u);
+
+          // Độ dày Z tròn đều và thuôn nhọn về đuôi
+          const r = Math.sin(v);
+          const zFactor = Math.cos(v);
+
+          const heightRatio = Math.max(0.04, (y0 + 17) / 33);
+          const plumpness = Math.pow(heightRatio, 0.65) * 6.8;
+
+          const scale = 0.19;
+          const x = (x0 * (0.82 + 0.18 * r)) * scale;
+          const y = y0 * scale;
+          const z = (zFactor * plumpness) * scale;
+
+          vertices.push(x, y, z);
+        }
+      }
+
+      for (let i = 0; i < uSteps; i++) {
+        for (let j = 0; j < vSteps; j++) {
+          const a = i * (vSteps + 1) + j;
+          const b = (i + 1) * (vSteps + 1) + j;
+          const c = (i + 1) * (vSteps + 1) + (j + 1);
+          const d = i * (vSteps + 1) + (j + 1);
+
+          indices.push(a, b, d);
+          indices.push(b, c, d);
+        }
+      }
+
+      geom.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+      geom.setIndex(indices);
+      geom.computeVertexNormals();
+      geom.center();
+      return geom;
     };
 
-    const geometry = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
-    geometry.center();
-    // Quay ngược lại để đỉnh nhọn hướng xuống dưới
-    geometry.rotateZ(Math.PI);
+    const geometry = createOrganicHeartGeometry(48);
 
-    // 3. Vật liệu bóng bẩy như đá quý pha lê Ruby
+    // 3. Vật liệu Pha lê Ruby Sang Trọng (Luxury Ruby Glass & Satin Glow)
     const material = new THREE.MeshPhysicalMaterial({
-      color: 0xff3b60,
-      emissive: 0x4a0a16,
+      color: 0xff2858,
+      emissive: 0x480816,
+      emissiveIntensity: 0.6,
       roughness: 0.12,
-      metalness: 0.1,
+      metalness: 0.08,
       clearcoat: 1.0,
-      clearcoatRoughness: 0.1,
+      clearcoatRoughness: 0.08,
+      transmission: 0.35,
+      ior: 1.48,
       reflectivity: 0.9,
     });
 
     const heartMesh = new THREE.Mesh(geometry, material);
-    heartMesh.scale.set(0.9, 0.9, 0.9);
     scene.add(heartMesh);
 
-    // 4. Các hạt bụi vàng lấp lánh (Sparkle Particles)
-    const particleCount = 28;
+    // 4. Lõi hào quang phát sáng nhẹ bên trong (Inner Glow Core)
+    const innerGeometry = createOrganicHeartGeometry(24);
+    const innerMaterial = new THREE.MeshBasicMaterial({
+      color: 0xff6b8b,
+      transparent: true,
+      opacity: 0.35,
+      blending: THREE.AdditiveBlending,
+    });
+    const innerMesh = new THREE.Mesh(innerGeometry, innerMaterial);
+    innerMesh.scale.set(0.85, 0.85, 0.85);
+    heartMesh.add(innerMesh);
+
+    // 5. Bụi sao vàng lấp lánh quay quanh (Golden Stardust Fireflies)
+    const particleCount = 36;
     const particleGeometry = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particleCount * 3);
 
     for (let i = 0; i < particleCount * 3; i += 3) {
-      particlePositions[i] = (Math.random() - 0.5) * 16;
-      particlePositions[i + 1] = (Math.random() - 0.5) * 16;
-      particlePositions[i + 2] = (Math.random() - 0.5) * 10;
+      const radius = 3.5 + Math.random() * 2.5;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = (Math.random() - 0.5) * Math.PI;
+
+      particlePositions[i] = radius * Math.cos(theta) * Math.cos(phi);
+      particlePositions[i + 1] = radius * Math.sin(phi);
+      particlePositions[i + 2] = radius * Math.sin(theta) * Math.cos(phi);
     }
 
     particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
 
     const particleMaterial = new THREE.PointsMaterial({
-      color: 0xffd166,
-      size: 0.45,
+      color: 0xffe082,
+      size: 0.38,
       transparent: true,
       opacity: 0.85,
       blending: THREE.AdditiveBlending,
@@ -91,28 +142,30 @@ export default function ThreeHeart({ onBurstHearts }) {
     const particles = new THREE.Points(particleGeometry, particleMaterial);
     scene.add(particles);
 
-    // 5. Hệ thống Ánh Sáng
-    const ambientLight = new THREE.AmbientLight(0xfff0f3, 1.2);
+    // 6. Ánh Sáng Studio Chuyên Nghiệp
+    const ambientLight = new THREE.AmbientLight(0xffedf1, 1.4);
     scene.add(ambientLight);
 
-    const directionalLight1 = new THREE.DirectionalLight(0xffffff, 2.5);
-    directionalLight1.position.set(5, 10, 10);
-    scene.add(directionalLight1);
+    // Key light (Ánh sáng chính tạo vệt phản chiếu lấp lánh)
+    const keyLight = new THREE.DirectionalLight(0xffffff, 3.2);
+    keyLight.position.set(6, 8, 8);
+    scene.add(keyLight);
 
-    const directionalLight2 = new THREE.DirectionalLight(0xff6b81, 1.8);
-    directionalLight2.position.set(-8, -5, 5);
-    scene.add(directionalLight2);
+    // Rim light (Ánh sáng viền hồng tạo độ sâu 3D sắc sảo)
+    const rimLight = new THREE.DirectionalLight(0xff6b81, 2.5);
+    rimLight.position.set(-6, -4, -4);
+    scene.add(rimLight);
 
-    const pointLight = new THREE.PointLight(0xff2a55, 3.5, 25);
-    pointLight.position.set(0, 0, 5);
-    scene.add(pointLight);
+    // Top fill light (Hắt sáng dịu từ trên xuống)
+    const topLight = new THREE.PointLight(0xff8da1, 2.0, 15);
+    topLight.position.set(0, 5, 4);
+    scene.add(topLight);
 
-    // 6. Nhịp tim đập (Heartbeat math pulse)
+    // 7. Nhịp tim đập & Tương tác chuột
     let animationFrameId;
     let clock = new THREE.Clock();
     let speedMultiplier = 1;
 
-    // Tương tác chuột kéo xoay nhẹ
     let isDragging = false;
     let previousMousePosition = { x: 0, y: 0 };
 
@@ -140,9 +193,8 @@ export default function ThreeHeart({ onBurstHearts }) {
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
 
-    // Nhấp vào để đập rộn ràng hơn
     const handleClick = () => {
-      speedMultiplier = 2.2;
+      speedMultiplier = 2.4;
       setTimeout(() => {
         speedMultiplier = 1;
       }, 1200);
@@ -151,39 +203,40 @@ export default function ThreeHeart({ onBurstHearts }) {
 
     container.addEventListener('click', handleClick);
 
-    // 7. Render Loop
+    // 8. Vòng lặp Render (Animation Loop)
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
 
       const elapsedTime = clock.getElapsedTime() * speedMultiplier;
 
-      // Nhịp đập chuẩn: Thình... thịch... (2 nhịp liên tiếp rồi nghỉ)
-      const beatCycle = (elapsedTime * 2.2) % (Math.PI * 2);
+      // Nhịp đập tim chuẩn tự nhiên: Thình... Thịch... Nghỉ...
+      const cycle = (elapsedTime * 2.2) % (Math.PI * 2);
       let scale = 1;
 
-      if (beatCycle < 0.8) {
-        // Nhịp 1 (Thình)
-        scale = 1 + 0.16 * Math.sin(beatCycle * (Math.PI / 0.8));
-      } else if (beatCycle >= 0.9 && beatCycle < 1.6) {
-        // Nhịp 2 (Thịch)
-        const subCycle = (beatCycle - 0.9) / 0.7;
-        scale = 1 + 0.11 * Math.sin(subCycle * Math.PI);
+      if (cycle < 0.7) {
+        // Nhịp 1
+        scale = 1 + 0.15 * Math.sin(cycle * (Math.PI / 0.7));
+      } else if (cycle >= 0.8 && cycle < 1.4) {
+        // Nhịp 2
+        const sub = (cycle - 0.8) / 0.6;
+        scale = 1 + 0.1 * Math.sin(sub * Math.PI);
       } else {
-        // Khoảng nghỉ giữa các nhịp
+        // Nghỉ ngơi nhẹ
         scale = 1;
       }
 
-      heartMesh.scale.set(0.9 * scale, 0.9 * scale, 0.9 * scale);
+      heartMesh.scale.set(scale, scale, scale);
 
-      // Xoay nhẹ nhàng tự nhiên khi không kéo chuột
+      // Dao động lơ lửng tự nhiên
       if (!isDragging) {
-        heartMesh.rotation.y = Math.sin(elapsedTime * 0.8) * 0.25;
-        heartMesh.rotation.x = Math.sin(elapsedTime * 0.5) * 0.12;
+        heartMesh.rotation.y = Math.sin(elapsedTime * 0.7) * 0.22;
+        heartMesh.rotation.x = Math.sin(elapsedTime * 0.4) * 0.1;
+        heartMesh.position.y = Math.sin(elapsedTime * 1.2) * 0.12;
       }
 
-      // Xoay nhẹ các hạt sao lấp lánh
-      particles.rotation.y = elapsedTime * 0.15;
-      particles.rotation.x = elapsedTime * 0.08;
+      // Xoay dải sao bụi vàng
+      particles.rotation.y = elapsedTime * 0.2;
+      particles.rotation.z = elapsedTime * 0.1;
 
       renderer.render(scene, camera);
     };
@@ -202,20 +255,28 @@ export default function ThreeHeart({ onBurstHearts }) {
       }
       geometry.dispose();
       material.dispose();
+      innerGeometry.dispose();
+      innerMaterial.dispose();
       particleGeometry.dispose();
       particleMaterial.dispose();
     };
   }, [onBurstHearts]);
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="relative flex flex-col items-center group">
+      {/* Soft romantic pulsating aura halo behind the 3D heart */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-36 bg-gradient-to-r from-pink-500/25 to-rose-400/20 rounded-full blur-2xl pointer-events-none animate-pulse" />
+
+      {/* WebGL Canvas Container */}
       <div
         ref={containerRef}
-        className="w-28 h-28 md:w-32 md:h-32 cursor-grab active:cursor-grabbing hover:scale-105 transition-transform relative select-none"
-        title="Trái tim 3D Three.js • Nhấn hoặc kéo để tương tác!"
-      ></div>
-      <div className="flex items-center gap-1.5 -mt-1 bg-pink-50/80 px-2.5 py-0.5 rounded-full border border-pink-100/60 shadow-2xs">
-        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+        className="w-32 h-32 md:w-36 md:h-36 cursor-grab active:cursor-grabbing hover:scale-108 transition-transform duration-300 relative select-none z-10 drop-shadow-[0_12px_24px_rgba(255,40,88,0.28)]"
+        title="Trái tim 3D Pha Lê • Nhấn hoặc kéo để tương tác xoay!"
+      />
+
+      {/* Status Badge */}
+      <div className="flex items-center gap-1.5 -mt-2 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full border border-pink-200/80 shadow-xs z-20 group-hover:border-primary transition-colors">
+        <span className="w-2 h-2 rounded-full bg-primary animate-ping" />
         <span className="text-[10px] text-primary font-bold uppercase tracking-wider">
           Đang yêu
         </span>

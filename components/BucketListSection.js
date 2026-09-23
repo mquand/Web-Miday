@@ -72,7 +72,7 @@ export default function BucketListSection({
 
         {/* Progress Card */}
         <div
-          className="bg-pink-50/50 border border-pink-100 rounded-3xl p-6 md:p-8 mb-8 shadow-xs"
+          className="bg-white/90 backdrop-blur-md border border-pink-200/80 rounded-3xl p-6 md:p-8 mb-8 shadow-sm"
           data-aos="fade-up"
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
@@ -82,15 +82,15 @@ export default function BucketListSection({
                 Tiến độ hành trình ước mơ
               </span>
             </div>
-            <div className="text-sm font-semibold text-primary">
+            <div className="text-sm font-bold text-primary font-mono bg-pink-50 px-3 py-1 rounded-full border border-pink-100">
               Đã hoàn thành {completedCount}/{totalCount} mục ({percentage}%)
             </div>
           </div>
 
           {/* Progress Bar Track */}
-          <div className="w-full h-3.5 bg-white border border-pink-200/60 rounded-full overflow-hidden p-0.5">
+          <div className="w-full h-4 bg-gray-100 border border-pink-100 rounded-full overflow-hidden p-0.5 shadow-inner">
             <div
-              className="h-full bg-gradient-to-r from-pink-400 to-primary rounded-full transition-all duration-700 ease-out"
+              className="h-full bg-gradient-to-r from-pink-400 via-rose-500 to-primary rounded-full transition-all duration-700 ease-out shadow-xs"
               style={{ width: `${percentage}%` }}
             ></div>
           </div>
@@ -103,8 +103,8 @@ export default function BucketListSection({
               key={item.id}
               className={`flex items-center justify-between p-4 md:p-5 rounded-2xl border transition-all duration-200 group ${
                 item.completed
-                  ? 'bg-pink-50/30 border-pink-100/70 text-gray-400'
-                  : 'bg-white border-gray-100 hover:border-pink-200 hover:shadow-xs text-gray-800'
+                  ? 'bg-pink-50/20 border-pink-100/50 text-gray-400'
+                  : 'bg-white border-pink-100/60 hover:border-primary hover:shadow-md hover:-translate-y-0.5 text-gray-800'
               }`}
               data-aos="fade-up"
               data-aos-delay={(i % 5) * 50}

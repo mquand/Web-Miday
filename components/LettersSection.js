@@ -81,11 +81,10 @@ export default function LettersSection({ letters, coupleInfo, onAddLetter, onDel
             >
               {/* Wax Seal / Stamp Icon */}
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-full bg-pink-50 border border-pink-200 text-primary flex items-center justify-center text-sm shadow-xs group-hover:scale-110 transition-transform">
-                  <FaEnvelope className="group-hover:hidden" />
-                  <FaEnvelopeOpen className="hidden group-hover:block" />
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-700 via-rose-600 to-red-500 text-white shadow-md ring-2 ring-rose-200/80 flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                  <FaHeart className="text-white text-xs drop-shadow-xs" />
                 </div>
-                <span className="text-[11px] font-semibold text-primary bg-pink-50 px-2.5 py-0.5 rounded-full">
+                <span className="text-[11px] font-semibold text-rose-600 bg-rose-50 px-3 py-1 rounded-full border border-rose-100">
                   {letter.tag || 'Thư Tình'}
                 </span>
               </div>

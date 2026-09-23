@@ -103,13 +103,13 @@ export default function UpcomingCountdown({ countdowns, onAddCountdown, onDelete
         </div>
 
         {/* Countdowns Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {countdowns.map((item, i) => {
             const time = timeLefts[item.id] || { days: 0, hours: 0, minutes: 0, seconds: 0 };
             return (
               <div
                 key={item.id}
-                className="bg-[#FFFDFD] border border-pink-100 rounded-3xl p-5 shadow-sm hover:shadow-lg transition-all duration-300 relative flex flex-col justify-between group"
+                className="bg-white/90 backdrop-blur-md border border-pink-100/90 rounded-3xl p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative flex flex-col justify-between group"
                 data-aos="fade-up"
                 data-aos-delay={(i % 4) * 80}
               >
@@ -120,7 +120,7 @@ export default function UpcomingCountdown({ countdowns, onAddCountdown, onDelete
                       onDeleteCountdown(item.id);
                     }
                   }}
-                  className="absolute top-4 right-4 text-gray-300 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-4 right-4 text-gray-300 hover:text-red-500 p-1.5 rounded-full hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all"
                   title="Xóa sự kiện"
                 >
                   <FaTrash className="text-xs" />
@@ -128,49 +128,55 @@ export default function UpcomingCountdown({ countdowns, onAddCountdown, onDelete
 
                 {/* Top info */}
                 <div>
-                  <div className="flex items-center gap-2.5 mb-3">
-                    <span className="text-2xl p-2 rounded-2xl bg-pink-50 border border-pink-100">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-2xl p-2.5 rounded-2xl bg-gradient-to-tr from-pink-50 to-rose-50 border border-pink-100 shadow-2xs group-hover:scale-110 transition-transform">
                       {item.icon || '💖'}
                     </span>
-                    <div>
-                      <h3 className="font-bold text-gray-800 text-sm line-clamp-1">{item.title}</h3>
-                      <span className="text-[11px] text-gray-400">{formatDate(item.date)}</span>
+                    <div className="pr-4">
+                      <h3 className="font-bold text-gray-800 text-sm tracking-tight line-clamp-1 group-hover:text-primary transition-colors">
+                        {item.title}
+                      </h3>
+                      <span className="text-[11px] font-mono text-gray-400 font-medium">
+                        {formatDate(item.date)}
+                      </span>
                     </div>
                   </div>
 
                   {item.note && (
-                    <p className="text-xs text-gray-500 italic mb-4 line-clamp-1">"{item.note}"</p>
+                    <p className="text-xs text-gray-500 italic mb-4 line-clamp-2 leading-relaxed bg-pink-50/40 p-2 rounded-xl border border-pink-100/40">
+                      "{item.note}"
+                    </p>
                   )}
                 </div>
 
                 {/* Counter boxes */}
                 {time.isToday ? (
-                  <div className="bg-pink-100 text-primary font-bold text-center py-4 rounded-2xl animate-pulse text-sm">
+                  <div className="bg-gradient-to-r from-pink-500 to-rose-400 text-white font-bold text-center py-3.5 rounded-2xl animate-pulse text-xs tracking-wide shadow-md shadow-pink-200">
                     🎉 Hôm nay là ngày đặc biệt!
                   </div>
                 ) : (
-                  <div className="grid grid-cols-4 gap-1.5 text-center pt-2 border-t border-pink-50">
-                    <div className="bg-white border border-pink-100/70 p-2 rounded-xl">
-                      <div className="text-lg font-black text-primary leading-tight">{time.days}</div>
-                      <div className="text-[10px] text-gray-400 font-medium">ngày</div>
+                  <div className="grid grid-cols-4 gap-1.5 text-center pt-3 border-t border-pink-100/60">
+                    <div className="bg-pink-50/50 border border-pink-100/60 p-2 rounded-xl">
+                      <div className="text-lg font-black text-gray-800 leading-tight font-mono">{time.days}</div>
+                      <div className="text-[10px] text-gray-400 font-medium uppercase">ngày</div>
                     </div>
-                    <div className="bg-white border border-pink-100/70 p-2 rounded-xl">
-                      <div className="text-lg font-black text-primary leading-tight">
+                    <div className="bg-pink-50/50 border border-pink-100/60 p-2 rounded-xl">
+                      <div className="text-lg font-black text-gray-800 leading-tight font-mono">
                         {time.hours.toString().padStart(2, '0')}
                       </div>
-                      <div className="text-[10px] text-gray-400 font-medium">giờ</div>
+                      <div className="text-[10px] text-gray-400 font-medium uppercase">giờ</div>
                     </div>
-                    <div className="bg-white border border-pink-100/70 p-2 rounded-xl">
-                      <div className="text-lg font-black text-primary leading-tight">
+                    <div className="bg-pink-50/50 border border-pink-100/60 p-2 rounded-xl">
+                      <div className="text-lg font-black text-gray-800 leading-tight font-mono">
                         {time.minutes.toString().padStart(2, '0')}
                       </div>
-                      <div className="text-[10px] text-gray-400 font-medium">phút</div>
+                      <div className="text-[10px] text-gray-400 font-medium uppercase">phút</div>
                     </div>
-                    <div className="bg-white border border-pink-100/70 p-2 rounded-xl">
-                      <div className="text-lg font-black text-primary leading-tight">
+                    <div className="bg-pink-50/50 border border-pink-100/60 p-2 rounded-xl">
+                      <div className="text-lg font-black text-primary leading-tight font-mono animate-pulse">
                         {time.seconds.toString().padStart(2, '0')}
                       </div>
-                      <div className="text-[10px] text-gray-400 font-medium">giây</div>
+                      <div className="text-[10px] text-gray-400 font-medium uppercase">giây</div>
                     </div>
                   </div>
                 )}
