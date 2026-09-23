@@ -9,21 +9,32 @@ import {
   DEFAULT_GALLERY,
   DEFAULT_LETTERS,
   DEFAULT_BUCKET_LIST,
+  DEFAULT_COUNTDOWNS,
+  DEFAULT_WHEEL_FOODS,
+  DEFAULT_WHEEL_DATES,
+  DEFAULT_LOVE_MAP,
+  DEFAULT_SECRET_VAULT,
 } from '../data/defaultData';
 
 import Navbar from '../components/Navbar';
 import HeartEffect from '../components/HeartEffect';
 import CoupleHero from '../components/CoupleHero';
+import UpcomingCountdown from '../components/UpcomingCountdown';
 import TimelineSection from '../components/TimelineSection';
+import LoveMapSection from '../components/LoveMapSection';
 import GallerySection from '../components/GallerySection';
+import DateNightWheel from '../components/DateNightWheel';
 import LettersSection from '../components/LettersSection';
 import BucketListSection from '../components/BucketListSection';
+import SecretLoveVault from '../components/SecretLoveVault';
 import MusicPlayer from '../components/MusicPlayer';
 import EditCoupleModal from '../components/EditCoupleModal';
+import LoveCardExporter from '../components/LoveCardExporter';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isCardExportOpen, setIsCardExportOpen] = useState(false);
   const heartRef = useRef(null);
 
   // States lưu trữ thông tin cặp đôi
@@ -32,6 +43,11 @@ export default function Home() {
   const [photos, setPhotos] = useState(DEFAULT_GALLERY);
   const [letters, setLetters] = useState(DEFAULT_LETTERS);
   const [bucketList, setBucketList] = useState(DEFAULT_BUCKET_LIST);
+  const [countdowns, setCountdowns] = useState(DEFAULT_COUNTDOWNS);
+  const [wheelFoods, setWheelFoods] = useState(DEFAULT_WHEEL_FOODS);
+  const [wheelDates, setWheelDates] = useState(DEFAULT_WHEEL_DATES);
+  const [loveMap, setLoveMap] = useState(DEFAULT_LOVE_MAP);
+  const [secretVault, setSecretVault] = useState(DEFAULT_SECRET_VAULT);
 
   // Khởi tạo và đọc dữ liệu từ localStorage
   useEffect(() => {
@@ -83,6 +99,21 @@ export default function Home() {
 
         const savedBucketList = localStorage.getItem('miday_bucketlist');
         if (savedBucketList) setBucketList(JSON.parse(savedBucketList));
+
+        const savedCountdowns = localStorage.getItem('miday_countdowns');
+        if (savedCountdowns) setCountdowns(JSON.parse(savedCountdowns));
+
+        const savedFoods = localStorage.getItem('miday_wheel_foods');
+        if (savedFoods) setWheelFoods(JSON.parse(savedFoods));
+
+        const savedDates = localStorage.getItem('miday_wheel_dates');
+        if (savedDates) setWheelDates(JSON.parse(savedDates));
+
+        const savedMap = localStorage.getItem('miday_love_map');
+        if (savedMap) setLoveMap(JSON.parse(savedMap));
+
+        const savedVault = localStorage.getItem('miday_secret_vault');
+        if (savedVault) setSecretVault(JSON.parse(savedVault));
       } catch (err) {
         console.error('Error loading data from localStorage:', err);
       }
@@ -217,12 +248,84 @@ export default function Home() {
     }
   };
 
+  const handleAddCountdown = (newEvent) => {
+    const updated = [...countdowns, newEvent];
+    setCountdowns(updated);
+    try {
+      localStorage.setItem('miday_countdowns', JSON.stringify(updated));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleDeleteCountdown = (id) => {
+    const updated = countdowns.filter((c) => c.id !== id);
+    setCountdowns(updated);
+    try {
+      localStorage.setItem('miday_countdowns', JSON.stringify(updated));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleUpdateWheelFoods = (newFoods) => {
+    setWheelFoods(newFoods);
+    try {
+      localStorage.setItem('miday_wheel_foods', JSON.stringify(newFoods));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleUpdateWheelDates = (newDates) => {
+    setWheelDates(newDates);
+    try {
+      localStorage.setItem('miday_wheel_dates', JSON.stringify(newDates));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleAddLocation = (newLoc) => {
+    const updated = [...loveMap, newLoc];
+    setLoveMap(updated);
+    try {
+      localStorage.setItem('miday_love_map', JSON.stringify(updated));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleDeleteLocation = (id) => {
+    const updated = loveMap.filter((l) => l.id !== id);
+    setLoveMap(updated);
+    try {
+      localStorage.setItem('miday_love_map', JSON.stringify(updated));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleUpdateVault = (newVault) => {
+    setSecretVault(newVault);
+    try {
+      localStorage.setItem('miday_secret_vault', JSON.stringify(newVault));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const handleResetDefault = () => {
     setCoupleInfo(DEFAULT_COUPLE_INFO);
     setMilestones(DEFAULT_TIMELINE);
     setPhotos(DEFAULT_GALLERY);
     setLetters(DEFAULT_LETTERS);
     setBucketList(DEFAULT_BUCKET_LIST);
+    setCountdowns(DEFAULT_COUNTDOWNS);
+    setWheelFoods(DEFAULT_WHEEL_FOODS);
+    setWheelDates(DEFAULT_WHEEL_DATES);
+    setLoveMap(DEFAULT_LOVE_MAP);
+    setSecretVault(DEFAULT_SECRET_VAULT);
 
     try {
       localStorage.removeItem('miday_couple_info');
@@ -230,6 +333,11 @@ export default function Home() {
       localStorage.removeItem('miday_gallery');
       localStorage.removeItem('miday_letters');
       localStorage.removeItem('miday_bucketlist');
+      localStorage.removeItem('miday_countdowns');
+      localStorage.removeItem('miday_wheel_foods');
+      localStorage.removeItem('miday_wheel_dates');
+      localStorage.removeItem('miday_love_map');
+      localStorage.removeItem('miday_secret_vault');
     } catch (e) {
       console.error(e);
     }
@@ -240,6 +348,11 @@ export default function Home() {
       heartRef.current.burst();
     }
   };
+
+  // Tính số ngày bên nhau
+  const daysCount = coupleInfo.startDate
+    ? Math.max(0, Math.floor((new Date() - new Date(coupleInfo.startDate + 'T00:00:00')) / (1000 * 60 * 60 * 24)))
+    : 0;
 
   if (!mounted) {
     return (
@@ -271,6 +384,7 @@ export default function Home() {
         coupleInfo={coupleInfo}
         onBurstHearts={handleBurstHearts}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        onOpenCardExport={() => setIsCardExportOpen(true)}
       />
 
       {/* Hero: Thông tin cặp đôi & Bộ đếm ngày yêu thời gian thực */}
@@ -281,14 +395,30 @@ export default function Home() {
         onBurstHearts={handleBurstHearts}
       />
 
-      {/* Hành trình tình yêu: Cột mốc đáng nhớ */}
+      {/* 1. Bộ đếm ngược ngày kỷ niệm sắp tới */}
+      <UpcomingCountdown
+        countdowns={countdowns}
+        onAddCountdown={handleAddCountdown}
+        onDeleteCountdown={handleDeleteCountdown}
+        onBurstHearts={handleBurstHearts}
+      />
+
+      {/* 2. Hành trình tình yêu: Cột mốc đáng nhớ */}
       <TimelineSection
         milestones={milestones}
         onAddMilestone={handleAddMilestone}
         onDeleteMilestone={handleDeleteMilestone}
       />
 
-      {/* Kho ảnh kỷ niệm */}
+      {/* 3. Bản đồ kỷ niệm các điểm đến */}
+      <LoveMapSection
+        locations={loveMap}
+        onAddLocation={handleAddLocation}
+        onDeleteLocation={handleDeleteLocation}
+        onBurstHearts={handleBurstHearts}
+      />
+
+      {/* 4. Kho ảnh kỷ niệm */}
       <GallerySection
         photos={photos}
         onAddPhoto={handleAddPhoto}
@@ -296,7 +426,16 @@ export default function Home() {
         onLikePhoto={handleLikePhoto}
       />
 
-      {/* Hòm thư tình cảm */}
+      {/* 5. Vòng quay quyết định ăn gì / đi đâu */}
+      <DateNightWheel
+        foodOptions={wheelFoods}
+        dateOptions={wheelDates}
+        onUpdateFoods={handleUpdateWheelFoods}
+        onUpdateDates={handleUpdateWheelDates}
+        onBurstHearts={handleBurstHearts}
+      />
+
+      {/* 6. Hòm thư tình cảm */}
       <LettersSection
         letters={letters}
         coupleInfo={coupleInfo}
@@ -304,7 +443,7 @@ export default function Home() {
         onDeleteLetter={handleDeleteLetter}
       />
 
-      {/* Danh sách những điều cùng nhau làm */}
+      {/* 7. Danh sách những điều cùng nhau làm */}
       <BucketListSection
         items={bucketList}
         onToggleItem={handleToggleBucketItem}
@@ -313,16 +452,31 @@ export default function Home() {
         onBurstHearts={handleBurstHearts}
       />
 
-      {/* Trình phát nhạc nền piano lãng mạn */}
+      {/* 8. Chiếc hộp bí mật khóa mật mã PIN */}
+      <SecretLoveVault
+        vaultData={secretVault}
+        onUpdateVault={handleUpdateVault}
+        onBurstHearts={handleBurstHearts}
+      />
+
+      {/* Trình phát nhạc nền đa giai điệu */}
       <MusicPlayer />
 
-      {/* Modal chỉnh sửa thông tin cặp đôi */}
+      {/* Modal tùy chỉnh thông tin cặp đôi */}
       <EditCoupleModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         coupleInfo={coupleInfo}
         onSave={handleSaveCoupleInfo}
         onResetDefault={handleResetDefault}
+      />
+
+      {/* Modal xuất hình nền điện thoại đôi */}
+      <LoveCardExporter
+        isOpen={isCardExportOpen}
+        onClose={() => setIsCardExportOpen(false)}
+        coupleInfo={coupleInfo}
+        daysCount={daysCount}
       />
 
       {/* Footer ấm áp dành riêng cho 2 bạn */}
@@ -338,11 +492,21 @@ export default function Home() {
             Nơi lưu giữ từng khoảnh khắc ngọt ngào, những kỷ niệm vô giá và hành trình tình yêu đẹp đẽ của chúng mình.
           </p>
 
-          <div className="flex justify-center gap-6 text-xs text-gray-500 mb-6">
+          <div className="flex flex-wrap justify-center gap-4 text-xs text-gray-500 mb-6">
+            <a href="#countdown" className="hover:text-primary transition-colors">Đếm ngược</a>
             <a href="#timeline" className="hover:text-primary transition-colors">Cột mốc</a>
+            <a href="#map" className="hover:text-primary transition-colors">Bản đồ</a>
             <a href="#gallery" className="hover:text-primary transition-colors">Kho ảnh</a>
+            <a href="#wheel" className="hover:text-primary transition-colors">Vòng quay</a>
             <a href="#letters" className="hover:text-primary transition-colors">Thư tình</a>
             <a href="#bucketlist" className="hover:text-primary transition-colors">Ước nguyện</a>
+            <a href="#vault" className="hover:text-primary transition-colors">Hộp bí mật</a>
+            <button
+              onClick={() => setIsCardExportOpen(true)}
+              className="hover:text-primary transition-colors cursor-pointer"
+            >
+              Xuất hình nền
+            </button>
             <button
               onClick={() => setIsSettingsOpen(true)}
               className="hover:text-primary transition-colors cursor-pointer"

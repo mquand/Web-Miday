@@ -1,34 +1,66 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { FaMusic, FaPlay, FaPause, FaHeart } from 'react-icons/fa';
+import { FaMusic, FaPlay, FaPause, FaHeart, FaStepForward, FaStepBackward, FaLink } from 'react-icons/fa';
 
 export default function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+  const [customAudioUrl, setCustomAudioUrl] = useState('');
+  const [isUrlModalOpen, setIsUrlModalOpen] = useState(false);
   const audioCtxRef = useRef(null);
   const intervalRef = useRef(null);
+  const audioElementRef = useRef(null);
 
-  // Giai điệu Canon lãng mạn nhẹ nhàng (tần số nốt nhạc Hz)
-  const notes = [
-    261.63, // C4
-    329.63, // E4
-    392.00, // G4
-    523.25, // C5
-    196.00, // G3
-    246.94, // B3
-    293.66, // D4
-    392.00, // G4
-    220.00, // A3
-    261.63, // C4
-    329.63, // E4
-    440.00, // A4
-    174.61, // F3
-    220.00, // A3
-    261.63, // C4
-    349.23, // F4
+  // Danh sách các giai điệu Web Audio du dương
+  const tracks = [
+    {
+      id: 0,
+      title: "Canon in D Piano",
+      type: "synth",
+      notes: [
+        261.63, 329.63, 392.00, 523.25,
+        196.00, 246.94, 293.66, 392.00,
+        220.00, 261.63, 329.63, 440.00,
+        174.61, 220.00, 261.63, 349.23
+      ],
+      speed: 750,
+      wave: 'triangle',
+      cutoff: 900,
+    },
+    {
+      id: 1,
+      title: "Lofi Hoàng Hôn",
+      type: "synth",
+      notes: [
+        174.61, 261.63, 329.63, 392.00,
+        164.81, 246.94, 293.66, 392.00,
+        146.83, 220.00, 261.63, 329.63,
+        130.81, 196.00, 261.63, 329.63
+      ],
+      speed: 900,
+      wave: 'sine',
+      cutoff: 750,
+    },
+    {
+      id: 2,
+      title: "Hộp Nhạc Kỷ Niệm",
+      type: "synth",
+      notes: [
+        523.25, 659.25, 783.99, 1046.50,
+        587.33, 698.46, 880.00, 1174.66,
+        659.25, 783.99, 987.77, 1318.51,
+        523.25, 659.25, 783.99, 1046.50
+      ],
+      speed: 600,
+      wave: 'sine',
+      cutoff: 1400,
+    },
   ];
 
-  // Phát một nốt piano mềm
-  const playTone = (freq, duration = 1.2) => {
+  const currentTrack = tracks[currentTrackIndex];
+
+  // Phát một nốt nhạc bằng Web Audio API
+  const playTone = (freq, duration, wave = 'triangle', cutoff = 900) => {
     if (!audioCtxRef.current) return;
     const ctx = audioCtxRef.current;
     if (ctx.state === 'suspended') {
@@ -39,17 +71,14 @@ export default function MusicPlayer() {
     const gain = ctx.createGain();
     const filter = ctx.createBiquadFilter();
 
-    // Dạng sóng hình sin ấm
-    osc.type = 'triangle';
+    osc.type = wave;
     osc.frequency.setValueAtTime(freq, ctx.currentTime);
 
-    // Filter làm âm thanh dịu ngọt như tiếng chuông/kalimba
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(900, ctx.currentTime);
+    filter.frequency.setValueAtTime(cutoff, ctx.currentTime);
 
-    // Envelope âm lượng: mềm mại tan dần
     gain.gain.setValueAtTime(0.001, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.07, ctx.currentTime + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.06, ctx.currentTime + 0.05);
     gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
 
     osc.connect(filter);
@@ -60,7 +89,21 @@ export default function MusicPlayer() {
     osc.stop(ctx.currentTime + duration);
   };
 
-  const startMusic = () => {
+  const startMusic = (track = currentTrack) => {
+    stopMusic();
+
+    // Nếu người dùng nhập URL MP3 riêng
+    if (customAudioUrl) {
+      if (!audioElementRef.current) {
+        audioElementRef.current = new Audio(customAudioUrl);
+        audioElementRef.current.loop = true;
+      }
+      audioElementRef.current.play().catch((err) => console.log('Audio element play:', err));
+      setIsPlaying(true);
+      return;
+    }
+
+    // Phát giai điệu Web Audio API
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       if (!audioCtxRef.current) {
@@ -68,15 +111,13 @@ export default function MusicPlayer() {
       }
 
       let noteIndex = 0;
-      // Phát nốt đầu tiên ngay lập tức
-      playTone(notes[noteIndex]);
-      noteIndex = (noteIndex + 1) % notes.length;
+      playTone(track.notes[noteIndex], 1.5, track.wave, track.cutoff);
+      noteIndex = (noteIndex + 1) % track.notes.length;
 
-      // Chu kỳ phát giai điệu
       intervalRef.current = setInterval(() => {
-        playTone(notes[noteIndex], 1.5);
-        noteIndex = (noteIndex + 1) % notes.length;
-      }, 750);
+        playTone(track.notes[noteIndex], 1.5, track.wave, track.cutoff);
+        noteIndex = (noteIndex + 1) % track.notes.length;
+      }, track.speed);
 
       setIsPlaying(true);
     } catch (e) {
@@ -89,6 +130,9 @@ export default function MusicPlayer() {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
+    if (audioElementRef.current) {
+      audioElementRef.current.pause();
+    }
     setIsPlaying(false);
   };
 
@@ -100,17 +144,34 @@ export default function MusicPlayer() {
     }
   };
 
+  const nextTrack = () => {
+    const nextIdx = (currentTrackIndex + 1) % tracks.length;
+    setCurrentTrackIndex(nextIdx);
+    if (isPlaying) {
+      startMusic(tracks[nextIdx]);
+    }
+  };
+
+  const prevTrack = () => {
+    const prevIdx = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+    setCurrentTrackIndex(prevIdx);
+    if (isPlaying) {
+      startMusic(tracks[prevIdx]);
+    }
+  };
+
   useEffect(() => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
       if (audioCtxRef.current) audioCtxRef.current.close();
+      if (audioElementRef.current) audioElementRef.current.pause();
     };
   }, []);
 
   return (
     <div className="fixed bottom-6 right-6 z-40">
       <div
-        className={`flex items-center gap-3 bg-white/95 backdrop-blur-md border border-pink-100 p-2 pr-4 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl ${
+        className={`flex items-center gap-2 bg-white/95 backdrop-blur-md border border-pink-100 p-2 pr-3.5 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl ${
           isPlaying ? 'border-primary shadow-pink-100' : ''
         }`}
       >
@@ -122,38 +183,55 @@ export default function MusicPlayer() {
           }`}
           title={isPlaying ? "Tạm dừng nhạc" : "Phát nhạc tình yêu"}
         >
-          {/* Vinyl grooves */}
           <div className="absolute inset-1 rounded-full border border-gray-800 pointer-events-none"></div>
           <div className="w-4 h-4 rounded-full bg-pink-100 flex items-center justify-center text-[10px]">
             <FaHeart className="text-primary text-[8px]" />
           </div>
         </button>
 
-        {/* Info & Control */}
-        <div className="flex flex-col cursor-pointer" onClick={toggleMusic}>
-          <div className="flex items-center gap-1.5 text-xs font-bold text-gray-800">
-            <span>Giai Điệu Tình Yêu</span>
+        {/* Info */}
+        <div className="flex flex-col cursor-pointer max-w-[130px]" onClick={toggleMusic}>
+          <div className="flex items-center gap-1.5 text-xs font-bold text-gray-800 truncate">
+            <span>{customAudioUrl ? 'Bài Hát Riêng' : currentTrack.title}</span>
             {isPlaying && (
-              <span className="flex items-center gap-0.5 h-2">
+              <span className="flex items-center gap-0.5 h-2 shrink-0">
                 <span className="w-0.5 h-2 bg-primary rounded-full animate-bounce"></span>
                 <span className="w-0.5 h-3 bg-primary rounded-full animate-bounce delay-75"></span>
                 <span className="w-0.5 h-1.5 bg-primary rounded-full animate-bounce delay-150"></span>
               </span>
             )}
           </div>
-          <span className="text-[10px] text-gray-400">
-            {isPlaying ? "Đang phát • Nhấn để dừng" : "Nhấn để phát nhạc nền"}
+          <span className="text-[10px] text-gray-400 truncate">
+            {isPlaying ? "Đang phát • Nhấn để dừng" : "Nhấn để phát nhạc"}
           </span>
         </div>
 
-        {/* Play/Pause Button */}
-        <button
-          onClick={toggleMusic}
-          className="w-7 h-7 rounded-full bg-pink-50 hover:bg-pink-100 text-primary flex items-center justify-center text-xs ml-1 transition-colors"
-          aria-label={isPlaying ? "Dừng" : "Phát"}
-        >
-          {isPlaying ? <FaPause className="text-[10px]" /> : <FaPlay className="text-[10px] ml-0.5" />}
-        </button>
+        {/* Controls: Prev, Play/Pause, Next */}
+        <div className="flex items-center gap-1 pl-1">
+          <button
+            onClick={prevTrack}
+            className="w-6 h-6 rounded-full text-gray-400 hover:text-primary flex items-center justify-center text-[10px] transition-colors"
+            title="Bài trước"
+          >
+            <FaStepBackward />
+          </button>
+
+          <button
+            onClick={toggleMusic}
+            className="w-7 h-7 rounded-full bg-pink-50 hover:bg-pink-100 text-primary flex items-center justify-center text-xs transition-colors"
+            aria-label={isPlaying ? "Dừng" : "Phát"}
+          >
+            {isPlaying ? <FaPause className="text-[10px]" /> : <FaPlay className="text-[10px] ml-0.5" />}
+          </button>
+
+          <button
+            onClick={nextTrack}
+            className="w-6 h-6 rounded-full text-gray-400 hover:text-primary flex items-center justify-center text-[10px] transition-colors"
+            title="Bài tiếp theo"
+          >
+            <FaStepForward />
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -154,3 +154,115 @@ export const DEFAULT_BUCKET_LIST = [
   { id: 6, text: "Cùng nhau có một chuyến du lịch nước ngoài", completed: false, category: "Du lịch" },
   { id: 7, text: "Cùng nắm tay bước vào lễ đường hôn lễ thiêng liêng 💍", completed: false, category: "Mãi mãi" },
 ];
+
+export const DEFAULT_COUNTDOWNS = [
+  {
+    id: 1,
+    title: "Kỷ Niệm 2 Năm Yêu Nhau",
+    date: "2027-02-10T00:00:00",
+    icon: "🥂",
+    note: "Cột mốc 730 ngày đong đầy yêu thương",
+  },
+  {
+    id: 2,
+    title: "Sinh Nhật Chase Miee",
+    date: "2026-11-20T00:00:00",
+    icon: "🎂",
+    note: "Ngày đặc biệt của cô công chúa nhỏ",
+  },
+  {
+    id: 3,
+    title: "Sinh Nhật Minh Quân",
+    date: "2026-10-15T00:00:00",
+    icon: "🎁",
+    note: "Ngày sinh chàng trai ấm áp của em",
+  },
+  {
+    id: 4,
+    title: "Chuyến Du Lịch Đón Giáng Sinh",
+    date: "2026-12-24T00:00:00",
+    icon: "✈️",
+    note: "Cùng nhau đón một mùa đông tuyết trắng",
+  },
+];
+
+export const DEFAULT_WHEEL_FOODS = [
+  "Lẩu Haidilao",
+  "Nướng Hàn Quốc BBQ",
+  "Sushi & Sashimi Nhật",
+  "Bún Bò Huế & Trà Sữa",
+  "Pizza & Mỳ Ý",
+  "Cùng nhau nấu tại nhà",
+  "Gà Rán Giòn Rụm",
+  "Phở Bò & Cà Phê Trứng",
+];
+
+export const DEFAULT_WHEEL_DATES = [
+  "Đi xem phim rạp & ăn bắp",
+  "Cà phê rooftop ngắm hoàng hôn",
+  "Lượn phố hồ Tây hóng gió",
+  "Đi dạo công viên nắm tay",
+  "Đi bảo tàng & chụp ảnh đôi",
+  "Cùng xem phim chill tại nhà",
+  "Đi dạo phố mua sắm",
+  "Đi ăn vặt đêm vỉa hè",
+];
+
+export const DEFAULT_LOVE_MAP = [
+  {
+    id: 1,
+    city: "Hà Nội",
+    title: "Nơi Tình Yêu Bắt Đầu",
+    date: "10/02/2025",
+    coords: { x: 48, y: 16 },
+    image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80",
+    story: "Những con phố cổ thân quen, quán trà nhỏ nơi hai ánh mắt lần đầu chạm nhau và lời ngỏ lời yêu chân thành dưới ánh đèn đường.",
+  },
+  {
+    id: 2,
+    city: "Đà Nẵng - Hội An",
+    title: "Đêm Hoa Đăng Lung Linh",
+    date: "02/09/2025",
+    coords: { x: 58, y: 48 },
+    image: "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=600&q=80",
+    story: "Cùng nhau thả chiếc đèn hoa đăng trôi theo dòng sông Hoài, thầm ước cho hai đứa mãi luôn bên nhau bình yên như thế này.",
+  },
+  {
+    id: 3,
+    city: "Đà Lạt",
+    title: "Thành Phố Mộng Mơ",
+    date: "01/05/2025",
+    coords: { x: 55, y: 72 },
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
+    story: "Chuyến vi vu xe máy đầu tiên, đi qua những dốc thông mù sương và uống ly sữa đậu nành nóng hổi xua tan giá rét.",
+  },
+  {
+    id: 4,
+    city: "Phú Quốc",
+    title: "Hoàng Hôn Nhuộm Vàng Biển",
+    date: "30/04/2025",
+    coords: { x: 38, y: 88 },
+    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80",
+    story: "Cùng nhau ngắm ánh hoàng hôn đỏ rực buông xuống bãi cát trắng, tiếng sóng vỗ rì rào như lời thì thầm ngọt ngào.",
+  },
+];
+
+export const DEFAULT_SECRET_VAULT = {
+  passcode: "1002",
+  secretMessage: "Chúc mừng em/anh đã mở khóa được chiếc hộp bí mật của hai đứa! 💖 Đây là nơi cất giữ những lời thì thầm chân thành nhất: Dù cuộc sống ngoài kia có xoay vần ra sao, Minh Quân vẫn luôn dành trọn vẹn sự yêu thương, chở che và đồng hành cùng Chase Miee mỗi ngày. Yêu em nhiều lắm!",
+  secretItems: [
+    {
+      id: 1,
+      title: "Lời Hứa Bí Mật",
+      date: "10/02/2025",
+      content: "Anh hứa sẽ không bao giờ để em phải rơi nước mắt một mình, luôn lắng nghe và ôm em thật chặt mỗi khi em thấy yếu lòng.",
+    },
+    {
+      id: 2,
+      title: "Khoảnh Khắc Đáng Yêu Nhất",
+      date: "15/03/2025",
+      content: "Lúc em giận dỗi nhưng nghe anh rủ đi ăn kem thì mắt lại sáng rực lên. Nụ cười ấy là điều tuyệt vời nhất trần đời!",
+    },
+  ],
+};
+
