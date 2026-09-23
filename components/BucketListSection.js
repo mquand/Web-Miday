@@ -44,7 +44,7 @@ export default function BucketListSection({
   };
 
   return (
-    <section id="bucketlist" className="py-20 md:py-28 bg-white">
+    <section id="bucketlist" className="py-20 md:py-28 bg-[#FFF9FA] border-y border-pink-100/50">
       <div className="max-w-4xl mx-auto px-4 md:px-6">
         {/* Header */}
         <div className="text-center mb-10">

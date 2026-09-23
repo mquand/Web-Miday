@@ -76,7 +76,7 @@ export default function UpcomingCountdown({ countdowns, onAddCountdown, onDelete
   };
 
   return (
-    <section id="countdown" className="py-20 bg-white">
+    <section id="countdown" className="py-20 md:py-24 bg-[#FFF9FA] border-y border-pink-100/50">
       <div className="max-w-6xl mx-auto px-4 md:px-6">
         {/* Header */}
         <div className="text-center mb-12">

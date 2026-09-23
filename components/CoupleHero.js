@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { FaHeart, FaEdit, FaCalendarAlt, FaCamera, FaEnvelope, FaCheckCircle } from 'react-icons/fa';
+import ThreeHeart from './ThreeHeart';
 
 export default function CoupleHero({
   coupleInfo,
@@ -97,19 +98,8 @@ export default function CoupleHero({
             <p className="text-xs text-gray-500 font-medium">{coupleInfo.boyNickname || "Anh"}</p>
           </div>
 
-          {/* Heart Beat Center */}
-          <div className="flex flex-col items-center px-2">
-            <button
-              onClick={onBurstHearts}
-              className="group relative p-3 rounded-full hover:bg-pink-50 transition-colors cursor-pointer"
-              title="Nhấn để gửi tim yêu thương"
-            >
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-r from-pink-500 to-rose-400 flex items-center justify-center shadow-lg shadow-pink-200 group-hover:scale-110 active:scale-95 transition-transform animate-heartbeat">
-                <FaHeart className="text-white text-xl md:text-2xl" />
-              </div>
-            </button>
-            <span className="text-[11px] text-pink-500 font-semibold tracking-wider uppercase mt-1">Đang yêu</span>
-          </div>
+          {/* 3D Heart Beat Center with Three.js */}
+          <ThreeHeart onBurstHearts={onBurstHearts} />
 
           {/* Nàng */}
           <div className="flex flex-col items-center">

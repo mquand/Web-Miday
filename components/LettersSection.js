@@ -36,7 +36,7 @@ export default function LettersSection({ letters, coupleInfo, onAddLetter, onDel
   };
 
   return (
-    <section id="letters" className="py-20 md:py-28 bg-[#FAFAFC]">
+    <section id="letters" className="py-20 md:py-28 bg-white">
       <div className="max-w-5xl mx-auto px-4 md:px-6">
         {/* Header */}
         <div className="text-center mb-12">

@@ -11,9 +11,6 @@ import {
   DEFAULT_LETTERS,
   DEFAULT_BUCKET_LIST,
   DEFAULT_COUNTDOWNS,
-  DEFAULT_WHEEL_FOODS,
-  DEFAULT_WHEEL_DATES,
-  DEFAULT_LOVE_MAP,
   DEFAULT_SECRET_VAULT,
 } from '../data/defaultData';
 
@@ -22,9 +19,7 @@ import HeartEffect from '../components/HeartEffect';
 import CoupleHero from '../components/CoupleHero';
 import UpcomingCountdown from '../components/UpcomingCountdown';
 import TimelineSection from '../components/TimelineSection';
-import LoveMapSection from '../components/LoveMapSection';
 import GallerySection from '../components/GallerySection';
-import DateNightWheel from '../components/DateNightWheel';
 import LettersSection from '../components/LettersSection';
 import BucketListSection from '../components/BucketListSection';
 import SecretLoveVault from '../components/SecretLoveVault';
@@ -45,9 +40,6 @@ export default function Home() {
   const [letters, setLetters] = useState(DEFAULT_LETTERS);
   const [bucketList, setBucketList] = useState(DEFAULT_BUCKET_LIST);
   const [countdowns, setCountdowns] = useState(DEFAULT_COUNTDOWNS);
-  const [wheelFoods, setWheelFoods] = useState(DEFAULT_WHEEL_FOODS);
-  const [wheelDates, setWheelDates] = useState(DEFAULT_WHEEL_DATES);
-  const [loveMap, setLoveMap] = useState(DEFAULT_LOVE_MAP);
   const [secretVault, setSecretVault] = useState(DEFAULT_SECRET_VAULT);
 
   // Khởi tạo và đọc dữ liệu từ localStorage
@@ -69,9 +61,6 @@ export default function Home() {
           localStorage.setItem('miday_letters', JSON.stringify(DEFAULT_LETTERS));
           localStorage.setItem('miday_bucketlist', JSON.stringify(DEFAULT_BUCKET_LIST));
           localStorage.setItem('miday_countdowns', JSON.stringify(DEFAULT_COUNTDOWNS));
-          localStorage.setItem('miday_wheel_foods', JSON.stringify(DEFAULT_WHEEL_FOODS));
-          localStorage.setItem('miday_wheel_dates', JSON.stringify(DEFAULT_WHEEL_DATES));
-          localStorage.setItem('miday_love_map', JSON.stringify(DEFAULT_LOVE_MAP));
           localStorage.setItem('miday_secret_vault', JSON.stringify(DEFAULT_SECRET_VAULT));
 
           setCoupleInfo(DEFAULT_COUPLE_INFO);
@@ -80,9 +69,6 @@ export default function Home() {
           setLetters(DEFAULT_LETTERS);
           setBucketList(DEFAULT_BUCKET_LIST);
           setCountdowns(DEFAULT_COUNTDOWNS);
-          setWheelFoods(DEFAULT_WHEEL_FOODS);
-          setWheelDates(DEFAULT_WHEEL_DATES);
-          setLoveMap(DEFAULT_LOVE_MAP);
           setSecretVault(DEFAULT_SECRET_VAULT);
         } else {
           // Phiên bản hiện tại: đọc từ localStorage và đồng bộ nếu couple.config.js có thay đổi
@@ -120,15 +106,6 @@ export default function Home() {
 
           const savedCountdowns = localStorage.getItem('miday_countdowns');
           if (savedCountdowns) setCountdowns(JSON.parse(savedCountdowns));
-
-          const savedFoods = localStorage.getItem('miday_wheel_foods');
-          if (savedFoods) setWheelFoods(JSON.parse(savedFoods));
-
-          const savedDates = localStorage.getItem('miday_wheel_dates');
-          if (savedDates) setWheelDates(JSON.parse(savedDates));
-
-          const savedMap = localStorage.getItem('miday_love_map');
-          if (savedMap) setLoveMap(JSON.parse(savedMap));
 
           const savedVault = localStorage.getItem('miday_secret_vault');
           if (savedVault) setSecretVault(JSON.parse(savedVault));
@@ -287,44 +264,6 @@ export default function Home() {
     }
   };
 
-  const handleUpdateWheelFoods = (newFoods) => {
-    setWheelFoods(newFoods);
-    try {
-      localStorage.setItem('miday_wheel_foods', JSON.stringify(newFoods));
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleUpdateWheelDates = (newDates) => {
-    setWheelDates(newDates);
-    try {
-      localStorage.setItem('miday_wheel_dates', JSON.stringify(newDates));
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleAddLocation = (newLoc) => {
-    const updated = [...loveMap, newLoc];
-    setLoveMap(updated);
-    try {
-      localStorage.setItem('miday_love_map', JSON.stringify(updated));
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleDeleteLocation = (id) => {
-    const updated = loveMap.filter((l) => l.id !== id);
-    setLoveMap(updated);
-    try {
-      localStorage.setItem('miday_love_map', JSON.stringify(updated));
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   const handleUpdateVault = (newVault) => {
     setSecretVault(newVault);
     try {
@@ -341,9 +280,6 @@ export default function Home() {
     setLetters(DEFAULT_LETTERS);
     setBucketList(DEFAULT_BUCKET_LIST);
     setCountdowns(DEFAULT_COUNTDOWNS);
-    setWheelFoods(DEFAULT_WHEEL_FOODS);
-    setWheelDates(DEFAULT_WHEEL_DATES);
-    setLoveMap(DEFAULT_LOVE_MAP);
     setSecretVault(DEFAULT_SECRET_VAULT);
 
     try {
@@ -353,9 +289,6 @@ export default function Home() {
       localStorage.removeItem('miday_letters');
       localStorage.removeItem('miday_bucketlist');
       localStorage.removeItem('miday_countdowns');
-      localStorage.removeItem('miday_wheel_foods');
-      localStorage.removeItem('miday_wheel_dates');
-      localStorage.removeItem('miday_love_map');
       localStorage.removeItem('miday_secret_vault');
     } catch (e) {
       console.error(e);
@@ -429,15 +362,7 @@ export default function Home() {
         onDeleteMilestone={handleDeleteMilestone}
       />
 
-      {/* 3. Bản đồ kỷ niệm các điểm đến */}
-      <LoveMapSection
-        locations={loveMap}
-        onAddLocation={handleAddLocation}
-        onDeleteLocation={handleDeleteLocation}
-        onBurstHearts={handleBurstHearts}
-      />
-
-      {/* 4. Kho ảnh kỷ niệm */}
+      {/* 3. Kho ảnh kỷ niệm */}
       <GallerySection
         photos={photos}
         onAddPhoto={handleAddPhoto}
@@ -445,16 +370,7 @@ export default function Home() {
         onLikePhoto={handleLikePhoto}
       />
 
-      {/* 5. Vòng quay quyết định ăn gì / đi đâu */}
-      <DateNightWheel
-        foodOptions={wheelFoods}
-        dateOptions={wheelDates}
-        onUpdateFoods={handleUpdateWheelFoods}
-        onUpdateDates={handleUpdateWheelDates}
-        onBurstHearts={handleBurstHearts}
-      />
-
-      {/* 6. Hòm thư tình cảm */}
+      {/* 4. Hòm thư tình cảm */}
       <LettersSection
         letters={letters}
         coupleInfo={coupleInfo}
@@ -462,7 +378,7 @@ export default function Home() {
         onDeleteLetter={handleDeleteLetter}
       />
 
-      {/* 7. Danh sách những điều cùng nhau làm */}
+      {/* 5. Danh sách những điều cùng nhau làm */}
       <BucketListSection
         items={bucketList}
         onToggleItem={handleToggleBucketItem}
@@ -471,7 +387,7 @@ export default function Home() {
         onBurstHearts={handleBurstHearts}
       />
 
-      {/* 8. Chiếc hộp bí mật khóa mật mã PIN */}
+      {/* 6. Chiếc hộp bí mật khóa mật mã PIN */}
       <SecretLoveVault
         vaultData={secretVault}
         onUpdateVault={handleUpdateVault}
@@ -499,7 +415,7 @@ export default function Home() {
       />
 
       {/* Footer ấm áp dành riêng cho 2 bạn */}
-      <footer className="border-t border-pink-100/80 bg-white py-14 text-center text-sm text-gray-500">
+      <footer className="border-t border-pink-100/80 bg-[#FCF7F8] py-14 text-center text-sm text-gray-500">
         <div className="max-w-4xl mx-auto px-6">
           <div className="flex items-center justify-center gap-2 mb-3">
             <FaHeart className="text-primary text-base animate-pulse" />
@@ -514,9 +430,7 @@ export default function Home() {
           <div className="flex flex-wrap justify-center gap-4 text-xs text-gray-500 mb-6">
             <a href="#countdown" className="hover:text-primary transition-colors">Đếm ngược</a>
             <a href="#timeline" className="hover:text-primary transition-colors">Cột mốc</a>
-            <a href="#map" className="hover:text-primary transition-colors">Bản đồ</a>
             <a href="#gallery" className="hover:text-primary transition-colors">Kho ảnh</a>
-            <a href="#wheel" className="hover:text-primary transition-colors">Vòng quay</a>
             <a href="#letters" className="hover:text-primary transition-colors">Thư tình</a>
             <a href="#bucketlist" className="hover:text-primary transition-colors">Ước nguyện</a>
             <a href="#vault" className="hover:text-primary transition-colors">Hộp bí mật</a>

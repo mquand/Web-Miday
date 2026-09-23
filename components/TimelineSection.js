@@ -63,7 +63,7 @@ export default function TimelineSection({ milestones, onAddMilestone, onDeleteMi
   };
 
   return (
-    <section id="timeline" className="py-20 md:py-28 bg-[#FAFAFC]">
+    <section id="timeline" className="py-20 md:py-28 bg-white">
       <div className="max-w-4xl mx-auto px-4 md:px-6">
         {/* Header */}
         <div className="text-center mb-14">

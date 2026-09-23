@@ -6,13 +6,13 @@
  * - Tên của hai bạn, biệt danh, ảnh đại diện, ngày bắt đầu yêu
  * - Câu châm ngôn tình yêu
  * - Danh sách sự kiện đếm ngược, cột mốc hành trình, kho ảnh kỷ niệm
- * - Vòng quay ăn gì / đi đâu, hòm thư tình, điều ước, bản đồ du lịch
- * - Mật mã mở hộp bí mật
+ * - Hòm thư tình, danh sách điều ước cùng nhau thực hiện
+ * - Mật mã mở hộp bí mật (Secret Vault)
  * ===============================================================================
  */
 
 // Đổi số phiên bản này mỗi khi bạn muốn web xóa cache cũ và nhận ngay cấu hình mới
-export const CONFIG_VERSION = "1.0.1";
+export const CONFIG_VERSION = "1.0.3";
 
 /* -------------------------------------------------------------------------------
    1. THÔNG TIN CẶP ĐÔI (COUPLE PROFILE)
@@ -124,7 +124,8 @@ export const TIMELINE_CONFIG = [
 ];
 
 /* -------------------------------------------------------------------------------
-   4. BẢN ĐỒ DẤU CHÂN KỶ NIỆM (LOVE FOOTPRINT MAP)
+   4. BẢN ĐỒ DẤU CHÂN KỶ NIỆM (ĐÃ LƯỢC BỎ KHỎI GIAO DIỆN CHÍNH DO ĐÃ CÓ CỘT MỐC)
+   * Lưu ý: Phần Cột Mốc Tình Yêu (#journey) đã có đầy đủ địa điểm, ảnh & câu chuyện
 ------------------------------------------------------------------------------- */
 export const LOVE_MAP_CONFIG = [
   {
@@ -166,7 +167,7 @@ export const LOVE_MAP_CONFIG = [
 ];
 
 /* -------------------------------------------------------------------------------
-   5. KHO ẢNH KỶ NIỆM (SWEET MOMENTS GALLERY)
+   5. KHO ẢNH KỶ NIỆM (SWEET MOMENTS GALLERY & VAULT)
 ------------------------------------------------------------------------------- */
 export const GALLERY_CONFIG = [
   {
@@ -174,59 +175,95 @@ export const GALLERY_CONFIG = [
     title: "Nụ cười tỏa nắng",
     category: "Hẹn hò",
     date: "15/03/2025",
-    likes: 48,
-    url: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=600&q=80",
-    caption: "Bắt trọn khoảnh khắc em cười tươi như hoa trong buổi hẹn hò cuối tuần.",
+    likes: 58,
+    url: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=800&q=80",
+    caption: "Bắt trọn khoảnh khắc Chase Miee cười tươi như hoa trong buổi hẹn hò cuối tuần bên hồ Tây.",
   },
   {
     id: 2,
     title: "Hoàng hôn bên bờ biển",
     category: "Du lịch",
     date: "30/04/2025",
-    likes: 65,
-    url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80",
-    caption: "Ánh hoàng hôn buông xuống nhuộm vàng bãi cát và bóng hình hai đứa.",
+    likes: 85,
+    url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+    caption: "Ánh hoàng hôn buông xuống nhuộm vàng bãi cát và bóng hình hai đứa nắm tay nhau thật chặt.",
   },
   {
     id: 3,
     title: "Bó hoa ngày lễ tình nhân",
     category: "Kỷ niệm",
     date: "14/02/2025",
-    likes: 52,
-    url: "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=600&q=80",
-    caption: "Bó hoa đầu tiên anh tặng kèm lá thiệp viết tay ngập tràn tình cảm.",
+    likes: 92,
+    url: "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=800&q=80",
+    caption: "Bó hoa đầu tiên anh tặng kèm lá thiệp viết tay ngập tràn tình cảm ngay sau ngày hai ta chính thức bên nhau.",
   },
   {
     id: 4,
     title: "Góc cà phê quen",
     category: "Đời thường",
     date: "12/07/2025",
-    likes: 34,
-    url: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=600&q=80",
-    caption: "Những sáng Chủ Nhật bình yên ngồi đọc sách và trò chuyện cùng nhau.",
+    likes: 44,
+    url: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80",
+    caption: "Những sáng Chủ Nhật bình yên ngồi đọc sách và nhấp từng ngụm latte ấm áp bên em.",
   },
   {
     id: 5,
     title: "Đồi thông lộng gió",
     category: "Du lịch",
     date: "02/05/2025",
-    likes: 73,
-    url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=600&q=80",
-    caption: "Không khí trong lành của Đà Lạt và chiếc áo ấm đôi.",
+    likes: 97,
+    url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80",
+    caption: "Không khí se lạnh của Đà Lạt, sương mù bảng lảng và chiếc áo len ấm đôi hai đứa mặc cùng nhau.",
   },
   {
     id: 6,
     title: "Bữa tối ấm cúng",
     category: "Đời thường",
     date: "20/10/2025",
-    likes: 39,
-    url: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",
-    caption: "Cùng nhau vào bếp, tuy vụng về nhưng đồ ăn hôm nay thật ngon.",
+    likes: 63,
+    url: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
+    caption: "Cùng nhau vào bếp nấu nướng, tuy hơi vụng về nhưng đồ ăn tự làm lúc nào cũng đong đầy yêu thương.",
+  },
+  {
+    id: 7,
+    title: "Nắm tay dưới cơn mưa rào",
+    category: "Hẹn hò",
+    date: "18/06/2025",
+    likes: 112,
+    url: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=800&q=80",
+    caption: "Cơn mưa rào bất chợt của mùa hạ, chung một chiếc ô nhỏ và bàn tay chẳng nỡ buông ra.",
+  },
+  {
+    id: 8,
+    title: "Chiều dạo phố lá vàng",
+    category: "Hẹn hò",
+    date: "22/09/2025",
+    likes: 76,
+    url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80",
+    caption: "Mùa thu Hà Nội đẹp dịu dàng, những bước chân chậm rãi và nụ cười em làm tan biến mọi muộn phiền.",
+  },
+  {
+    id: 9,
+    title: "Sinh nhật bất ngờ của Chase Miee",
+    category: "Kỷ niệm",
+    date: "25/08/2025",
+    likes: 128,
+    url: "https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=800&q=80",
+    caption: "Chiếc bánh kem dâu tây nến lung linh và điều ước cho hai đứa sẽ cùng nhau đón thêm thật nhiều mùa sinh nhật.",
+  },
+  {
+    id: 10,
+    title: "Buổi picnic ngày nắng trong",
+    category: "Đời thường",
+    date: "15/11/2025",
+    likes: 54,
+    url: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=800&q=80",
+    caption: "Chiếc thảm caro trải dưới bãi cỏ xanh, gió hiu hiu thổi và những giai điệu acoustic êm đềm.",
   },
 ];
 
 /* -------------------------------------------------------------------------------
-   6. VÒNG QUAY ĂN GÌ & ĐI ĐÂU (DATE NIGHT WHEEL OPTIONS)
+   6. VÒNG QUAY ĂN GÌ & ĐI ĐÂU (ĐÃ LƯỢC BỎ KHỎI GIAO DIỆN CHÍNH THEO YÊU CẦU)
 ------------------------------------------------------------------------------- */
 export const WHEEL_CONFIG = {
   foods: [

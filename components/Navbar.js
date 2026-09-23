@@ -10,8 +10,6 @@ import {
   FaListUl,
   FaCalendarAlt,
   FaClock,
-  FaUtensils,
-  FaMapMarkedAlt,
   FaMobileAlt,
   FaLock
 } from 'react-icons/fa';
@@ -25,13 +23,11 @@ export default function Navbar({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
+    { name: "Đếm ngược", href: "#countdown", icon: <FaClock className="text-xs" /> },
     { name: "Cột mốc", href: "#timeline", icon: <FaCalendarAlt className="text-xs" /> },
     { name: "Kho ảnh", href: "#gallery", icon: <FaCamera className="text-xs" /> },
     { name: "Thư tình", href: "#letters", icon: <FaEnvelope className="text-xs" /> },
     { name: "Ước nguyện", href: "#bucketlist", icon: <FaListUl className="text-xs" /> },
-    { name: "Đếm ngược", href: "#countdown", icon: <FaClock className="text-xs" /> },
-    { name: "Vòng quay", href: "#wheel", icon: <FaUtensils className="text-xs" /> },
-    { name: "Bản đồ", href: "#map", icon: <FaMapMarkedAlt className="text-xs" /> },
     { name: "Hộp bí mật", href: "#vault", icon: <FaLock className="text-xs" /> },
   ];
 
