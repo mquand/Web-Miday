@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { FaHeart, FaEdit, FaCalendarAlt, FaCamera, FaEnvelope, FaCheckCircle, FaSparkles } from 'react-icons/fa';
-import ThreeHeart from './ThreeHeart';
+import InfinityLoveKnot from './InfinityLoveKnot';
 
 export default function CoupleHero({
   coupleInfo,
@@ -109,8 +109,8 @@ export default function CoupleHero({
             </p>
           </div>
 
-          {/* 3D Heart Centerpiece with Three.js */}
-          <ThreeHeart onBurstHearts={onBurstHearts} />
+          {/* Biểu tượng Dây Tơ Hồng Vô Cực (Infinity Love Knot) */}
+          <InfinityLoveKnot onBurstHearts={onBurstHearts} />
 
           {/* Nàng (Chase Miee) */}
           <div className="flex flex-col items-center group">

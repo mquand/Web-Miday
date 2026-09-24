@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { FaCheckCircle, FaRegCircle, FaPlus, FaTrash, FaTimes, FaListUl, FaStar } from 'react-icons/fa';
+import { FaCheckCircle, FaRegCircle, FaPlus, FaTrash, FaTimes, FaListUl, FaStar, FaFilter } from 'react-icons/fa';
+import { playSuccessChime, playSoftTap } from '../utils/soundEffects';
 
 export default function BucketListSection({
   items,
@@ -9,20 +10,30 @@ export default function BucketListSection({
   onDeleteItem,
   onBurstHearts,
 }) {
+  const [selectedCategory, setSelectedCategory] = useState('Tất cả');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newText, setNewText] = useState('');
   const [newCategory, setNewCategory] = useState('Trải nghiệm');
 
   const categories = ['Trải nghiệm', 'Du lịch', 'Đời thường', 'Tương lai', 'Mãi mãi'];
+  const filterTabs = ['Tất cả', ...categories, 'Đã xong'];
 
   const completedCount = items.filter((i) => i.completed).length;
   const totalCount = items.length;
   const percentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
+  // Lọc danh sách theo tab
+  const filteredItems = items.filter((item) => {
+    if (selectedCategory === 'Tất cả') return true;
+    if (selectedCategory === 'Đã xong') return item.completed;
+    return item.category === selectedCategory;
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!newText.trim()) return;
 
+    playSoftTap();
     onAddItem({
       id: Date.now(),
       text: newText.trim(),
@@ -36,9 +47,12 @@ export default function BucketListSection({
 
   const handleToggle = (id) => {
     const item = items.find((i) => i.id === id);
-    if (item && !item.completed && onBurstHearts) {
-      // Bắn tim ăn mừng khi hoàn thành một điều ước!
-      onBurstHearts();
+    if (item && !item.completed) {
+      // Âm thanh chúc mừng + hiệu ứng bắn tim khi hoàn thành!
+      playSuccessChime();
+      if (onBurstHearts) onBurstHearts();
+    } else {
+      playSoftTap();
     }
     onToggleItem(id);
   };
@@ -48,7 +62,7 @@ export default function BucketListSection({
       <div className="max-w-4xl mx-auto px-4 md:px-6">
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold px-3 py-1 rounded-full bg-pink-50 mb-3">
+          <div className="inline-flex items-center gap-1.5 text-primary text-xs font-semibold px-3.5 py-1 rounded-full bg-pink-50 mb-3 border border-pink-100">
             <FaStar className="text-xs" />
             <span>Ước Nguyện Của Hai Ta</span>
           </div>
@@ -61,8 +75,11 @@ export default function BucketListSection({
 
           <div className="mt-6" data-aos="fade-up" data-aos-delay="120">
             <button
-              onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center gap-2 bg-primary hover:bg-pink-600 text-white text-sm font-medium px-5 py-2.5 rounded-full shadow-sm hover:shadow-md transition-all active:scale-95"
+              onClick={() => {
+                playSoftTap();
+                setIsModalOpen(true);
+              }}
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-pink-600 hover:from-pink-600 hover:to-rose-600 text-white text-sm font-semibold px-6 py-2.5 rounded-full shadow-md shadow-pink-200 hover:shadow-lg hover:shadow-pink-300 transition-all active:scale-95"
             >
               <FaPlus className="text-xs" />
               <span>Thêm điều ước mới</span>
@@ -72,7 +89,7 @@ export default function BucketListSection({
 
         {/* Progress Card */}
         <div
-          className="bg-white/90 backdrop-blur-md border border-pink-200/80 rounded-3xl p-6 md:p-8 mb-8 shadow-sm"
+          className="bg-white/90 backdrop-blur-md border border-pink-200/80 rounded-3xl p-6 md:p-8 mb-8 shadow-sm transition-all hover:shadow-md"
           data-aos="fade-up"
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
@@ -82,32 +99,72 @@ export default function BucketListSection({
                 Tiến độ hành trình ước mơ
               </span>
             </div>
-            <div className="text-sm font-bold text-primary font-mono bg-pink-50 px-3 py-1 rounded-full border border-pink-100">
-              Đã hoàn thành {completedCount}/{totalCount} mục ({percentage}%)
+            <div className="text-xs sm:text-sm font-bold text-primary font-mono bg-pink-50 px-3.5 py-1 rounded-full border border-pink-100 flex items-center gap-1.5 self-start sm:self-auto">
+              <span>Đã hoàn thành</span>
+              <span className="text-pink-600 font-extrabold">{completedCount}/{totalCount}</span>
+              <span>({percentage}%)</span>
             </div>
           </div>
 
           {/* Progress Bar Track */}
-          <div className="w-full h-4 bg-gray-100 border border-pink-100 rounded-full overflow-hidden p-0.5 shadow-inner">
+          <div className="w-full h-3.5 bg-gray-100 border border-pink-100 rounded-full overflow-hidden p-0.5 shadow-inner">
             <div
               className="h-full bg-gradient-to-r from-pink-400 via-rose-500 to-primary rounded-full transition-all duration-700 ease-out shadow-xs"
               style={{ width: `${percentage}%` }}
-            ></div>
+            />
           </div>
+
+          {percentage === 100 && totalCount > 0 && (
+            <p className="text-xs text-primary font-semibold text-center mt-3 animate-pulse">
+              🎉 Thật tuyệt vời! Hai bạn đã hoàn thành trọn vẹn tất cả mục tiêu tình yêu!
+            </p>
+          )}
         </div>
 
-        {/* Wishlist Items */}
+        {/* Category Filter Tabs */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-3 mb-4 scrollbar-none text-xs font-semibold select-none" data-aos="fade-up">
+          {filterTabs.map((tab) => {
+            const count = tab === 'Tất cả' 
+              ? items.length 
+              : tab === 'Đã xong'
+              ? completedCount
+              : items.filter((i) => i.category === tab).length;
+
+            const isActive = selectedCategory === tab;
+            return (
+              <button
+                key={tab}
+                onClick={() => {
+                  playSoftTap();
+                  setSelectedCategory(tab);
+                }}
+                className={`px-3.5 py-1.5 rounded-full whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                  isActive
+                    ? 'bg-primary text-white shadow-xs font-bold'
+                    : 'bg-white/80 hover:bg-pink-50 text-gray-600 border border-pink-100/70 hover:border-pink-200'
+                }`}
+              >
+                <span>{tab}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500'}`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Wishlist Items List */}
         <div className="space-y-3">
-          {items.map((item, i) => (
+          {filteredItems.map((item, i) => (
             <div
               key={item.id}
               className={`flex items-center justify-between p-4 md:p-5 rounded-2xl border transition-all duration-200 group ${
                 item.completed
-                  ? 'bg-pink-50/20 border-pink-100/50 text-gray-400'
-                  : 'bg-white border-pink-100/60 hover:border-primary hover:shadow-md hover:-translate-y-0.5 text-gray-800'
+                  ? 'bg-pink-50/30 border-pink-100/60 text-gray-400'
+                  : 'bg-white border-pink-100/80 hover:border-primary hover:shadow-md hover:-translate-y-0.5 text-gray-800'
               }`}
               data-aos="fade-up"
-              data-aos-delay={(i % 5) * 50}
+              data-aos-delay={(i % 5) * 40}
             >
               <div
                 className="flex items-center gap-3.5 flex-1 cursor-pointer select-none"
@@ -116,9 +173,10 @@ export default function BucketListSection({
                 <button
                   type="button"
                   className="text-xl shrink-0 transition-transform active:scale-90"
+                  aria-label={item.completed ? 'Đánh dấu chưa hoàn thành' : 'Đánh dấu hoàn thành'}
                 >
                   {item.completed ? (
-                    <FaCheckCircle className="text-primary" />
+                    <FaCheckCircle className="text-primary animate-check-pop" />
                   ) : (
                     <FaRegCircle className="text-gray-300 group-hover:text-primary transition-colors" />
                   )}
@@ -141,7 +199,7 @@ export default function BucketListSection({
 
                   {item.completed && item.completedDate && (
                     <span className="text-[11px] text-pink-500 font-medium">
-                      ✓ Đạt được ngày {item.completedDate}
+                      ✓ Hoàn thành: {item.completedDate}
                     </span>
                   )}
                 </div>
@@ -150,6 +208,7 @@ export default function BucketListSection({
               {/* Delete Button */}
               <button
                 onClick={() => {
+                  playSoftTap();
                   if (confirm('Bạn có chắc muốn xóa điều ước này?')) {
                     onDeleteItem(item.id);
                   }
@@ -163,19 +222,24 @@ export default function BucketListSection({
           ))}
         </div>
 
-        {items.length === 0 && (
-          <div className="text-center py-12 text-gray-400 text-sm">
-            Chưa có điều ước nào. Hãy bấm "Thêm điều ước mới" để cùng nhau lên kế hoạch nhé!
+        {filteredItems.length === 0 && (
+          <div className="text-center py-12 text-gray-400 text-sm bg-white/60 rounded-3xl border border-dashed border-pink-200">
+            {selectedCategory === 'Tất cả'
+              ? 'Chưa có điều ước nào. Hãy bấm "Thêm điều ước mới" để cùng nhau lên kế hoạch nhé!'
+              : `Chưa có mục nào trong danh mục "${selectedCategory}".`}
           </div>
         )}
       </div>
 
       {/* Add Item Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm modal-backdrop-smooth">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 md:p-8 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
             <button
-              onClick={() => setIsModalOpen(false)}
+              onClick={() => {
+                playSoftTap();
+                setIsModalOpen(false);
+              }}
               className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 p-2 text-lg"
             >
               <FaTimes />
@@ -193,10 +257,10 @@ export default function BucketListSection({
                 <input
                   type="text"
                   required
-                  placeholder="Ví dụ: Cùng nhau đón bình minh trên đỉnh núi..."
+                  placeholder="Ví dụ: Cùng nhau ngắm cực quang ở Na Uy..."
                   value={newText}
                   onChange={(e) => setNewText(e.target.value)}
-                  className="w-full text-sm border border-gray-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-primary"
+                  className="w-full text-sm border border-gray-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-primary transition-colors"
                 />
               </div>
 
@@ -205,7 +269,7 @@ export default function BucketListSection({
                 <select
                   value={newCategory}
                   onChange={(e) => setNewCategory(e.target.value)}
-                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-primary bg-white"
+                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-primary bg-white transition-colors"
                 >
                   {categories.map((c) => (
                     <option key={c} value={c}>{c}</option>
@@ -216,14 +280,17 @@ export default function BucketListSection({
               <div className="flex justify-end gap-3 pt-3">
                 <button
                   type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-2.5 rounded-full text-xs font-semibold text-gray-600 hover:bg-gray-100"
+                  onClick={() => {
+                    playSoftTap();
+                    setIsModalOpen(false);
+                  }}
+                  className="px-5 py-2.5 rounded-full text-xs font-semibold text-gray-600 hover:bg-gray-100 transition-colors"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="bg-primary hover:bg-pink-600 text-white px-6 py-2.5 rounded-full text-xs font-semibold shadow-sm hover:shadow-md transition-all"
+                  className="bg-primary hover:bg-pink-600 text-white px-6 py-2.5 rounded-full text-xs font-semibold shadow-sm hover:shadow-md transition-all active:scale-95"
                 >
                   Thêm vào danh sách
                 </button>

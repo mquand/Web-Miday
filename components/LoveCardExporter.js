@@ -1,6 +1,7 @@
 'use client';
 import { useState, useRef } from 'react';
-import { FaDownload, FaTimes, FaMobileAlt, FaHeart, FaMagic } from 'react-icons/fa';
+import { FaDownload, FaTimes, FaMobileAlt, FaHeart } from 'react-icons/fa';
+import { playSoftTap, playSuccessChime } from '../utils/soundEffects';
 
 export default function LoveCardExporter({
   isOpen,
@@ -13,8 +14,24 @@ export default function LoveCardExporter({
 
   if (!isOpen) return null;
 
+  const formatDisplayDate = (dateStr) => {
+    if (!dateStr) return '';
+    try {
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+      return dateStr;
+    } catch {
+      return dateStr;
+    }
+  };
+
+  const formattedDate = formatDisplayDate(coupleInfo.startDate);
+
   const handleDownload = () => {
     setIsExporting(true);
+    playSoftTap();
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -94,7 +111,7 @@ export default function LoveCardExporter({
 
     ctx.fillStyle = '#A0AEC0';
     ctx.font = '32px Inter, sans-serif';
-    ctx.fillText(`Kể từ ngày 10/02/2025`, width / 2, cardY + 460);
+    ctx.fillText(`Kể từ ngày ${formattedDate}`, width / 2, cardY + 460);
 
     // Đường gạch mảnh trang trí
     ctx.strokeStyle = '#FFE8EC';
@@ -126,14 +143,18 @@ export default function LoveCardExporter({
       link.href = canvas.toDataURL('image/png');
       link.click();
       setIsExporting(false);
+      playSuccessChime();
     }, 200);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md modal-backdrop-smooth animate-in fade-in duration-200">
       <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
         <button
-          onClick={onClose}
+          onClick={() => {
+            playSoftTap();
+            onClose();
+          }}
           className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 p-2 text-lg"
         >
           <FaTimes />
@@ -158,7 +179,7 @@ export default function LoveCardExporter({
             {daysCount.toLocaleString()}
           </div>
           <div className="text-xs font-semibold text-gray-700">ngày bên nhau</div>
-          <div className="text-[10px] text-gray-400 mt-0.5">Kể từ ngày 10/02/2025</div>
+          <div className="text-[10px] text-gray-400 mt-0.5">Kể từ ngày {formattedDate}</div>
           <p className="text-[11px] text-gray-500 italic mt-3 line-clamp-2">
             "{coupleInfo.quote}"
           </p>

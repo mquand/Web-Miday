@@ -26,6 +26,7 @@ import SecretLoveVault from '../components/SecretLoveVault';
 import MusicPlayer from '../components/MusicPlayer';
 import EditCoupleModal from '../components/EditCoupleModal';
 import LoveCardExporter from '../components/LoveCardExporter';
+import ScrollExperience from '../components/ScrollExperience';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -47,7 +48,7 @@ export default function Home() {
     setMounted(true);
 
     if (typeof window !== 'undefined') {
-      AOS.init({ duration: 700, once: true, offset: 60 });
+      AOS.init({ duration: 550, once: true, offset: 50, easing: 'ease-out-cubic' });
 
       try {
         const savedVersion = localStorage.getItem('miday_config_version');
@@ -328,8 +329,9 @@ export default function Home() {
 
   return (
     <main className="font-sans antialiased text-gray-800 bg-[#FCFCFD]">
-      {/* Hiệu ứng thả tim */}
+      {/* Hiệu ứng thả tim & Trải nghiệm cuộn trang mượt mà */}
       <HeartEffect ref={heartRef} />
+      <ScrollExperience />
 
       {/* Navbar cố định */}
       <Navbar

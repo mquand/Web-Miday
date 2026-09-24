@@ -23,6 +23,10 @@ a, button, [role="button"], input[type="submit"], input[type="button"], input[ty
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html, body, #__next {
@@ -30,8 +34,15 @@ html, body, #__next {
 }
 
 body {
-  @apply text-gray-800 bg-white font-sans;
+  @apply text-gray-800 bg-[#FCFCFD] font-sans;
   overflow-x: hidden;
+}
+
+/* GPU Acceleration Utilities */
+.gpu-layer {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
 }
 
 .card {
@@ -41,46 +52,41 @@ body {
 /* Custom romantic heartbeat animation */
 @keyframes heartbeat {
   0% { transform: scale(1); }
-  14% { transform: scale(1.15); }
+  14% { transform: scale(1.12); }
   28% { transform: scale(1); }
-  42% { transform: scale(1.25); }
+  42% { transform: scale(1.2); }
   70% { transform: scale(1); }
 }
 
 .animate-heartbeat {
-  animation: heartbeat 1.8s infinite ease-in-out;
+  animation: heartbeat 1.8s infinite cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Float animation for hearts */
-@keyframes floatUp {
-  0% {
-    transform: translateY(0) scale(0.8) rotate(0deg);
-    opacity: 1;
+/* Destiny Thread Infinity Flow Animation */
+@keyframes destinyFlow {
+  from {
+    stroke-dashoffset: 0;
   }
-  100% {
-    transform: translateY(-120px) scale(1.2) rotate(20deg);
-    opacity: 0;
+  to {
+    stroke-dashoffset: -320;
   }
 }
 
-.animate-float-up {
-  animation: floatUp 2.2s forwards ease-out;
+.animate-destiny-flow {
+  animation: destinyFlow 4.5s linear infinite;
 }
 
-/* Trail animation for cursor hearts */
-@keyframes trailFade {
-  0% {
-    transform: translateY(0) scale(1) rotate(0deg);
-    opacity: 0.9;
+@keyframes destinyFlowReverse {
+  from {
+    stroke-dashoffset: 0;
   }
-  100% {
-    transform: translateY(-35px) scale(0.5) rotate(15deg);
-    opacity: 0;
+  to {
+    stroke-dashoffset: 320;
   }
 }
 
-.animate-trail-fade {
-  animation: trailFade 0.8s forwards ease-out;
+.animate-destiny-flow-reverse {
+  animation: destinyFlowReverse 6s linear infinite;
 }
 
 /* Vinyl spinning animation */
@@ -113,7 +119,7 @@ body {
 
 @keyframes kenburns {
   0% { transform: scale(1) translate(0, 0); }
-  50% { transform: scale(1.06) translate(-1%, -1%); }
+  50% { transform: scale(1.05) translate(-1%, -1%); }
   100% { transform: scale(1.02) translate(1%, 1%); }
 }
 
@@ -133,8 +139,36 @@ body {
 ::-webkit-scrollbar-thumb {
   background: #FF6B81;
   border-radius: 9999px;
+  border: 2px solid #fdf2f4;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #e0556b;
+}
+
+/* Smooth modal backdrop animation */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+}
+
+.modal-backdrop-smooth {
+  animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Smooth checkmark pop */
+@keyframes checkPop {
+  0% { transform: scale(0.8); }
+  50% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
+.animate-check-pop {
+  animation: checkPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }

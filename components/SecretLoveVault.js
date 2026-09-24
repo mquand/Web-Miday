@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { FaLock, FaLockOpen, FaKey, FaHeart, FaPlus, FaTimes, FaShieldAlt } from 'react-icons/fa';
+import { playSoftTap, playSuccessChime } from '../utils/soundEffects';
 
 export default function SecretLoveVault({
   vaultData,
@@ -19,12 +20,14 @@ export default function SecretLoveVault({
 
   const handleKeyPress = (num) => {
     if (pinInput.length >= 4) return;
+    playSoftTap();
     const nextPin = pinInput + num;
     setPinInput(nextPin);
 
     // Khi gõ đủ 4 số, tự động kiểm tra
     if (nextPin.length === 4) {
       if (nextPin === currentPasscode) {
+        playSuccessChime();
         setIsUnlocked(true);
         setPinInput('');
         if (onBurstHearts) onBurstHearts();
@@ -238,7 +241,7 @@ export default function SecretLoveVault({
 
       {/* Change PIN Modal */}
       {isChangePinOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md modal-backdrop-smooth">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl relative animate-in zoom-in-95 duration-200">
             <button
               onClick={() => setIsChangePinOpen(false)}
@@ -280,7 +283,7 @@ export default function SecretLoveVault({
 
       {/* Add Secret Note Modal */}
       {isAddNoteOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md modal-backdrop-smooth">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative animate-in zoom-in-95 duration-200">
             <button
               onClick={() => setIsAddNoteOpen(false)}

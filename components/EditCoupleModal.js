@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { FaTimes, FaHeart, FaCamera, FaUndo } from 'react-icons/fa';
+import { playSoftTap, playSuccessChime } from '../utils/soundEffects';
 
 export default function EditCoupleModal({
   isOpen,
@@ -15,6 +16,7 @@ export default function EditCoupleModal({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    playSuccessChime();
     onSave(formData);
     onClose();
   };
@@ -31,10 +33,13 @@ export default function EditCoupleModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md modal-backdrop-smooth animate-in fade-in duration-200">
       <div className="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
         <button
-          onClick={onClose}
+          onClick={() => {
+            playSoftTap();
+            onClose();
+          }}
           className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 p-2 text-lg"
         >
           <FaTimes />

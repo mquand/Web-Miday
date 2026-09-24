@@ -18,9 +18,14 @@ export default function ThreeHeart({ onBurstHearts }) {
     const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
     camera.position.z = 16;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      antialias: true,
+      powerPreference: 'high-performance',
+      stencil: false,
+    });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
     container.innerHTML = '';
@@ -203,8 +208,11 @@ export default function ThreeHeart({ onBurstHearts }) {
 
     container.addEventListener('click', handleClick);
 
-    // 8. Vòng lặp Render (Animation Loop)
+    // 8. Vòng lặp Render (Animation Loop) - Tự động tạm dừng khi cuộn ra khỏi tầm nhìn để siêu mượt
+    let isVisible = true;
+
     const animate = () => {
+      if (!isVisible) return;
       animationFrameId = requestAnimationFrame(animate);
 
       const elapsedTime = clock.getElapsedTime() * speedMultiplier;
@@ -241,10 +249,32 @@ export default function ThreeHeart({ onBurstHearts }) {
       renderer.render(scene, camera);
     };
 
+    // Theo dõi hiển thị viewport
+    let observer;
+    if (typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          const visible = entry.isIntersecting;
+          if (visible !== isVisible) {
+            isVisible = visible;
+            if (isVisible) {
+              animate();
+            } else if (animationFrameId) {
+              cancelAnimationFrame(animationFrameId);
+              animationFrameId = null;
+            }
+          }
+        },
+        { threshold: 0.05 }
+      );
+      observer.observe(container);
+    }
+
     animate();
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      if (observer) observer.disconnect();
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
       container.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
